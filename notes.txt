@@ -1,0 +1,7 @@
+Initial data captures:
+Logged timestamp,can_id,dlc,data_hex,scenario,is_attack
+~10 minutes of autonomous driving in city enviroment - no traffic
+~10 minutes of autonomous driving in city enviroment - with traffic
+
+
+Feature extractions
