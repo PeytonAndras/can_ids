@@ -13,10 +13,12 @@ from pathlib import Path
 from collections import Counter
 
 # -------- CONFIG --------
-RAW_DIR = Path("../data/raw")       # folder containing CSV logs
-OUT_DIR = Path("../data/processed") # where to save features
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+RAW_DIR = PROJECT_ROOT / "data" / "raw"       # folder containing CSV logs
+OUT_DIR = PROJECT_ROOT / "data" / "processed" # where to save features
 WINDOW_MS = 100.0                   # size of each time window
 SAVE_PARQUET = False                # also save as Parquet
+MAX_PAYLOAD_BYTES = 8               # CAN payload length
 # -------------------------
 
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -45,6 +47,27 @@ def payload_variance(hex_payload):
     except Exception:
         return 0
 
+
+def extract_payload_bytes(hex_payload, max_bytes=MAX_PAYLOAD_BYTES):
+    """Return a fixed-length list of byte values (0-255) parsed from a hex payload string."""
+    values = [np.nan] * max_bytes
+    if not isinstance(hex_payload, str):
+        return values
+
+    payload = hex_payload.strip()
+    if len(payload) == 0:
+        return values
+
+    try:
+        raw_bytes = bytes.fromhex(payload)
+    except ValueError:
+        return values
+
+    limit = min(len(raw_bytes), max_bytes)
+    for i in range(limit):
+        values[i] = raw_bytes[i]
+    return values
+
 def featurize_file(path, window_ms=WINDOW_MS):
     print(f"[+] Processing {path.name}")
     df = pd.read_csv(path)
@@ -61,6 +84,13 @@ def featurize_file(path, window_ms=WINDOW_MS):
     df = df.sort_values("timestamp").reset_index(drop=True)
     df["id_num"] = df["id"].apply(parse_hex)
     df["payload_var"] = df["data"].apply(payload_variance)
+    byte_cols = [f"payload_byte_{i}" for i in range(MAX_PAYLOAD_BYTES)]
+    byte_df = pd.DataFrame(
+        df["data"].apply(lambda x: extract_payload_bytes(x, MAX_PAYLOAD_BYTES)).tolist(),
+        columns=byte_cols,
+        index=df.index
+    )
+    df = pd.concat([df, byte_df], axis=1)
     # compute inter-arrival
     df["dt_ms"] = df["timestamp"].diff() * 1000.0
     df["dt_ms"] = df["dt_ms"].fillna(df["dt_ms"].mean())
@@ -77,7 +107,7 @@ def featurize_file(path, window_ms=WINDOW_MS):
     for win, g in df.groupby("win"):
         ids = Counter(g["id_num"])
         entropy = compute_entropy(ids)
-        feats.append({
+        stats = {
             "win": win,
             "start_time": g["timestamp"].min(),
             "end_time": g["timestamp"].max(),
@@ -89,7 +119,21 @@ def featurize_file(path, window_ms=WINDOW_MS):
             "entropy_ids": entropy,
             "avg_dlc": g["dlc"].mean(),
             "avg_payload_var": g["payload_var"].mean()
-        })
+        }
+
+        for col in byte_cols:
+            series = g[col].dropna()
+            if series.empty:
+                stats[f"{col}_mean"] = 0.0
+                stats[f"{col}_std"] = 0.0
+                stats[f"{col}_min"] = 0.0
+                stats[f"{col}_max"] = 0.0
+            else:
+                stats[f"{col}_mean"] = series.mean()
+                stats[f"{col}_std"] = series.std(ddof=0)
+                stats[f"{col}_min"] = series.min()
+                stats[f"{col}_max"] = series.max()
+        feats.append(stats)
     feat_df = pd.DataFrame(feats)
     feat_df["file"] = path.name
     feat_df["label"] = attack_flag
