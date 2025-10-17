@@ -1,7 +1,0 @@
-{
-  "percentile": 99.0,
-  "values": {
-    "isolation_forest": 0.613942196915599,
-    "pca": 0.17685406611704887
-  }
-}
