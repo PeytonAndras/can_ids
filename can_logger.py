@@ -18,7 +18,7 @@ running = True
 attack_active = False
 
 try:
-    with open('can_log_spoofing_attack.csv', 'w', newline='') as f:
+    with open('can_log_3.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['timestamp', 'can_id', 'dlc', 'data_hex', 'scenario', 'is_attack'])
 
