@@ -166,6 +166,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data-dir", type=Path, default=DATA_DIR, help="Directory with processed feature files")
     parser.add_argument("--models-dir", type=Path, default=MODELS_DIR, help="Where to store trained models")
     parser.add_argument("--results-dir", type=Path, default=RESULTS_DIR, help="Where to store score summaries")
+    parser.add_argument(
+        "--dataset",
+        dest="datasets",
+        action="append",
+        help="Dataset specification as name=path or just path; can be repeated for multi-dataset training",
+    )
     parser.add_argument("--percentile", type=float, default=DEFAULT_PERCENTILE, help="Percentile for threshold selection")
     parser.add_argument("--val-ratio", type=float, default=0.2, help="Fallback validation size when splitting all_features.csv")
     parser.add_argument("--ae", action="store_true", help="Train the MLP autoencoder in addition to IF and PCA")
@@ -377,13 +383,59 @@ def train_autoencoder(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.nda
     )
 
 
-def main() -> None:
-    args = parse_args()
+def evaluate_split(detectors: list[DetectorResult], df: pd.DataFrame | None, feature_names: list[str],
+                   scaler: StandardScaler, dataset_name: str, split: str, results_dir: Path) -> list[dict[str, Any]]:
+    if df is None:
+        return []
 
-    args.models_dir.mkdir(parents=True, exist_ok=True)
-    args.results_dir.mkdir(parents=True, exist_ok=True)
+    missing = [col for col in feature_names if col not in df.columns]
+    if missing:
+        preview = ", ".join(missing[:5])
+        print(f"[!] Skipping metrics for {dataset_name} ({split}) – missing features: {preview}")
+        return []
 
-    train_df, val_df = maybe_create_split(args.train, args.val, args.data_dir, args.val_ratio)
+    local = df.copy().fillna(0)
+    X = scaler.transform(local[feature_names].values)
+    labels = local["label"].values if "label" in local.columns else None
+    durations = local["duration_ms"] if "duration_ms" in local.columns else None
+
+    rows: list[dict[str, Any]] = []
+    for det in detectors:
+        if det.name == "isolation_forest":
+            scores = isolation_forest_scores(det.model, X)
+        elif det.name == "pca":
+            scores = pca_reconstruction_scores(det.model, X)
+        elif det.name == "autoencoder":
+            scores = autoencoder_scores(det.model, X)
+        else:
+            continue
+
+        if split not in {"train", "val"}:
+            payload = {"score": scores}
+            if labels is not None and labels.size:
+                payload["label"] = labels.astype(int)
+            pd.DataFrame(payload).to_csv(results_dir / f"{det.name}_{split}_scores.csv", index=False)
+
+        metrics = compute_metrics(scores, labels, det.threshold, durations)
+        if metrics:
+            metrics.update({
+                "dataset": dataset_name,
+                "split": split,
+                "detector": det.name,
+            })
+            rows.append(metrics)
+
+    return rows
+
+
+def train_for_dataset(dataset_name: str, data_dir: Path, train_path: Path, val_path: Path,
+                      models_dir: Path, results_dir: Path, percentile: float, val_ratio: float,
+                      use_autoencoder: bool, ae_hidden: str, ae_max_iter: int) -> None:
+    print(f"\n=== Training dataset: {dataset_name} ===")
+    models_dir.mkdir(parents=True, exist_ok=True)
+    results_dir.mkdir(parents=True, exist_ok=True)
+
+    train_df, val_df = maybe_create_split(train_path, val_path, data_dir, val_ratio)
 
     train_df = train_df.fillna(0)
     val_df = val_df.fillna(0)
@@ -394,28 +446,95 @@ def main() -> None:
     X_val = scaler.transform(val_df[feature_names].values)
     val_labels = val_df["label"].values if "label" in val_df.columns else None
 
-    thresholds: dict[str, dict[str, float]] = {
-        "percentile": args.percentile,
-        "values": {}
+    detectors: list[DetectorResult] = []
+    iso_result = train_isolation_forest(X_train, X_val, val_labels, percentile, feature_names,
+                                        scaler, models_dir, results_dir)
+    detectors.append(iso_result)
+
+    pca_result = train_pca_detector(X_train, X_val, val_labels, percentile, feature_names,
+                                    scaler, models_dir, results_dir)
+    detectors.append(pca_result)
+
+    if use_autoencoder:
+        hidden = parse_hidden_layers(ae_hidden)
+        ae_result = train_autoencoder(X_train, X_val, val_labels, percentile, feature_names,
+                                      scaler, models_dir, results_dir, hidden, ae_max_iter)
+        detectors.append(ae_result)
+
+    thresholds: dict[str, Any] = {
+        "percentile": percentile,
+        "values": {det.name: det.threshold for det in detectors}
     }
-
-    iso_threshold = train_isolation_forest(X_train, X_val, val_labels, args.percentile, feature_names,
-                                           scaler, args.models_dir, args.results_dir)
-    thresholds["values"]["isolation_forest"] = iso_threshold
-
-    pca_threshold = train_pca_detector(X_train, X_val, val_labels, args.percentile, feature_names,
-                                       scaler, args.models_dir, args.results_dir)
-    thresholds["values"]["pca"] = pca_threshold
-
-    if args.ae:
-        hidden = parse_hidden_layers(args.ae_hidden)
-        ae_threshold = train_autoencoder(X_train, X_val, val_labels, args.percentile, feature_names,
-                                         scaler, args.models_dir, args.results_dir, hidden, args.ae_max_iter)
-        thresholds["values"]["autoencoder"] = ae_threshold
-
-    thresholds_path = args.results_dir / "thresholds.json"
+    thresholds_path = results_dir / "thresholds.json"
     thresholds_path.write_text(json.dumps(thresholds, indent=2))
     print(f"[✓] Thresholds saved to {thresholds_path}")
+
+    metrics_rows: list[dict[str, Any]] = []
+    durations = val_df["duration_ms"] if "duration_ms" in val_df.columns else None
+    if val_labels is not None and val_labels.size:
+        for det in detectors:
+            metrics = compute_metrics(det.val_scores, val_labels, det.threshold, durations)
+            if metrics:
+                metrics.update({
+                    "dataset": dataset_name,
+                    "split": "val",
+                    "detector": det.name,
+                })
+                metrics_rows.append(metrics)
+
+    additional = load_additional_split(data_dir)
+    metrics_rows.extend(evaluate_split(detectors, additional, feature_names, scaler, dataset_name, "test", results_dir))
+
+    if metrics_rows:
+        metrics_path = results_dir / "metrics.csv"
+        existing = None
+        if metrics_path.exists():
+            try:
+                existing = pd.read_csv(metrics_path)
+            except Exception:
+                existing = None
+        metrics_df = pd.DataFrame(metrics_rows)
+        if existing is not None:
+            metrics_df = pd.concat([existing, metrics_df], ignore_index=True)
+        metrics_df.to_csv(metrics_path, index=False)
+        print(f"[✓] Metrics updated at {metrics_path}")
+
+def main() -> None:
+    args = parse_args()
+
+    dataset_specs = parse_dataset_arguments(args.datasets)
+
+    if dataset_specs:
+        for spec in dataset_specs:
+            models_dir = args.models_dir / spec.name
+            results_dir = args.results_dir / spec.name
+            train_for_dataset(
+                dataset_name=spec.name,
+                data_dir=spec.data_dir,
+                train_path=spec.train_path,
+                val_path=spec.val_path,
+                models_dir=models_dir,
+                results_dir=results_dir,
+                percentile=args.percentile,
+                val_ratio=args.val_ratio,
+                use_autoencoder=args.ae,
+                ae_hidden=args.ae_hidden,
+                ae_max_iter=args.ae_max_iter,
+            )
+    else:
+        train_for_dataset(
+            dataset_name="default",
+            data_dir=args.data_dir,
+            train_path=args.train,
+            val_path=args.val,
+            models_dir=args.models_dir,
+            results_dir=args.results_dir,
+            percentile=args.percentile,
+            val_ratio=args.val_ratio,
+            use_autoencoder=args.ae,
+            ae_hidden=args.ae_hidden,
+            ae_max_iter=args.ae_max_iter,
+        )
 
 
 if __name__ == "__main__":
