@@ -1,0 +1,14 @@
+# Deployment configuration for RAMN + CARLA real-time IDS
+window_ms: 100
+smoothing:
+  consecutive_windows: 2
+models:
+  isolation_forest: ../models/unsupervised/isolation_forest.joblib
+  pca: ../models/unsupervised/pca_reconstruction.joblib
+thresholds: ../results/unsupervised/thresholds.json
+ensemble: logical_and
+logging:
+  path: logs/alerts.jsonl
+  level: INFO
+telemetry:
+  http_port: 8080
