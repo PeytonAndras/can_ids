@@ -1,7 +1,33 @@
-Initial data captures:
-Logged timestamp,can_id,dlc,data_hex,scenario,is_attack
-~10 minutes of autonomous driving in city enviroment - no traffic
-~10 minutes of autonomous driving in city enviroment - with traffic
+Initial data captures
+--------------------
+- Logged columns: timestamp, can_id, dlc, data_hex, scenario, is_attack
+- ~10 minutes autonomous driving (city, no traffic)
+- ~10 minutes autonomous driving (city, with traffic)
 
 
-Feature extractions
+Feature extraction workflow
+---------------------------
+1. Activate environment: `conda activate can`
+2. Generate per-window features:
+	- `python scripts/feature_extractor_can_ids.py`
+	- Inputs: `data/raw/*.csv`
+	- Outputs: per-log CSVs + `data/processed/all_features.csv`
+	- Note: script attempts Parquet write when pyarrow is available.
+
+
+Unsupervised detector training
+------------------------------
+1. Ensure processed features exist (see above).
+2. Train IsolationForest + PCA (optional AE via `--ae` flag):
+	- `python scripts/train_unsupervised.py [--ae]`
+	- Default inputs: `data/processed/train.parquet` and `val.parquet`; if missing, script derives `train.csv` and `val.csv` from `all_features.csv` (normal windows).
+	- Models saved to `models/unsupervised/*.joblib`
+	- Score summaries + histograms + thresholds (99th percentile) saved to `results/unsupervised/`
+	- Recommended to include labeled attack windows in validation to tune thresholds.
+
+
+Next steps
+----------
+- Create evaluation script to score mixed normal/attack validation data and report ROC/AUC and confusion stats.
+- Document dependency setup (conda env, optional pyarrow) in README.
+- Validate unsupervised thresholds on additional attack-heavy captures.
