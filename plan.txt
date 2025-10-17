@@ -1,0 +1,242 @@
+i want to pivot to unsupervised learning on published datasets and then do a deployment on the vehicle testbed with RAMN and carla
+ChatGPT said:
+Thought for 11s
+
+Love this pivot. Here’s a crisp end-to-end plan to (1) train unsupervised models on published CAN IDS datasets, and (2) deploy the best detector on your RAMN + CARLA testbed. I’ll call out concrete choices, thresholds, and gotchas—and cite solid datasets so you can justify everything in your write-up.
+
+0) Pick datasets (balanced mix of “classic” + “realistic”)
+
+Use at least one classic, one realistic, and (optionally) one synthetic dataset:
+
+HCRL “Car-Hacking” — real-car OBD captures with DoS, fuzzy, gear/RPM spoofing; ~30–40 min traces w/ 300 short intrusions. Great for quick baselines. 
+ocslab.hksecurity.net
++1
+
+OTIDS (HCRL family) — timing/offset-focused CAN intrusion dataset (request/response timing properties). Useful for timing-based features. 
+ocslab.hksecurity.net
++2
+ocslab.hksecurity.net
++2
+
+ROAD (ORNL) — newer, more realistic and stealthy: >3.5 h of CAN with real fuzzing, fabrication, advanced and masquerade attacks; widely used for modern evaluations. Prefer this for main results. 
+0xsam.com
++2
+PMC
++2
+
+SynCAN (ETAS) — synthetic signal-space CAN to pretrain unsupervised models (helps generalization). Use as auxiliary pretraining if you can. 
+GitHub
++1
+
+Why this mix? Classic sets are easy for methods to “ace”; ROAD is harder/realistic and will pressure-test your detector. SynCAN gives breadth in normal behavior without overfitting to one car. Recent surveys also argue ROAD is better for fair comparison. 
+arXiv
+
+1) Standardize data → your feature format
+
+Unify all datasets to the same windowed feature schema you already use (100 ms window recommended):
+
+Columns you want per window
+
+total_frames, unique_ids
+
+mean_dt_ms, std_dt_ms (inter-arrival global or per-ID aggregated)
+
+entropy_ids (ID frequency entropy)
+
+avg_dlc
+
+avg_payload_var (byte variance)
+
+(optional) top-k ID frequencies, per-ID rate stats for the top 10 frequent IDs in the corpus
+
+Actions
+
+Write tiny dataset adapters (one per dataset) to map their CSV/LOG to your raw schema: timestamp,id,dlc,data_hex.
+
+Run your featurizer unchanged to produce 100 ms windows.
+
+Exclude marker/label columns from features (don’t leak).
+
+Save train/val/test splits by recording (not by rows) to avoid temporal leakage.
+
+Notes:
+
+ROAD/HCRL include labeled segments; for unsupervised training, use only normal windows for training, and keep attack windows for test. 
+0xsam.com
++1
+
+2) Train unsupervised detectors (normal-only)
+
+Train at least two complementary methods:
+
+Isolation Forest (tabular, fast, robust): n_estimators=300, random_state=42. Score = -score_samples(X) (higher = more anomalous).
+
+PCA reconstruction error: n_components=0.95; score = MSE between x and x_recon.
+
+(Optional) Autoencoder (MLP 64→16→64, ReLU, MSE, 50 epochs) if you have enough normal windows.
+
+Scaling: StandardScaler fit only on normal training windows, then apply to val/test.
+
+Thresholding (no labels needed)
+
+On normal validation windows, set threshold at desired FP budget: e.g., 99th percentile (≈1% FPR).
+
+Save: if_threshold.json, pca_threshold.json, and scaler.
+
+3) Benchmark across datasets
+
+Do the same training recipe per dataset; evaluate on that dataset’s test portion:
+
+Report (per dataset)
+
+FPR@T (chosen threshold), mean FP/hour on benign
+
+If labels exist (HCRL/OTIDS/ROAD): Recall, Precision, F1, latency (time to first alert after attack start)
+
+Ablations: 50 ms vs 100 ms vs 200 ms windows; remove timing or payload features and re-run (show where the power comes from)
+
+Generalization test: train on HCRL normal → test on ROAD normal (FPR drift), train on HCRL normal → test on ROAD attacks (recall drop). (This echoes concerns in recent work that classic datasets overstate performance; ROAD is harder/more realistic.) 
+arXiv
+
+Acceptance targets for paper-worthy results
+
+FP rate: ≤1 per 10 minutes on benign
+
+ROAD recall ≥0.7 with IF or IF+PCA ensemble (it’s tougher; justify threshold tradeoff). 
+0xsam.com
+
+4) Pick a deployment configuration for RAMN
+
+Choose the best-performing configuration on ROAD (or cross-dataset ensemble):
+
+Model: IsolationForest alone or IF ∧ PCA (alert when both exceed threshold → fewer FPs).
+
+Window: 100 ms (move to 50 ms only if you need faster reaction).
+
+Smoothing: require k=2 consecutive anomalous windows (200 ms) to alert.
+
+Export: models/if_clf.joblib, models/pca.joblib (optional), models/scaler.joblib, models/thresholds.json, config.yaml.
+
+5) Bridge sim→bench: domain alignment for RAMN + CARLA
+
+RAMN’s ID mix and timing will differ from the public sets. Keep your deployment robust:
+
+Warm-up baseline: collect 5–10 minutes of purely normal RAMN+CARLA (no attacks).
+
+Re-center scaler: either (a) reuse trained scaler but recompute per-feature mean offsets from RAMN normal and adjust scores; or (b) quickly re-fit scaler on RAMN normal only, leaving model weights fixed (often enough).
+
+Per-ID normalization (optional): if a few IDs dominate, include per-ID rate standardization for top-k IDs.
+
+Feature parity: compute exactly the same features in deployment as in training (same order and units!).
+
+6) Deploy on RAMN (real-time)
+
+Pipeline
+
+python-can listener on can0
+
+100 ms rolling windows → feature vector
+
+Scale (saved scaler) → anomaly score (IF + optional PCA)
+
+Threshold + k=2 smoothing → alert
+
+Log: ts_start, ts_end, score_if, score_pca, alert, top_contributing_features
+
+Live checks
+
+10–15 min benign CARLA drives → FP budget holds
+
+Inject controlled replay/spoof/flood bursts (short, labeled with marker ID 0x7FF) → alerts within ~200–400 ms
+
+7) Field evaluation on RAMN
+
+Metrics
+
+FP/hour on benign (≥30 min logs)
+
+Detection latency per attack type (median & IQR)
+
+Stability vs. scenario (urban vs. highway in CARLA)
+
+Ablation: no PCA vs. IF∧PCA; k=1 vs k=2 smoothing
+
+Artifacts
+
+Score timelines (overlay markers), alert rasters, confusion matrix (if you label attack windows), feature-deviation bars for flagged windows.
+
+8) Write-up structure that sells the pivot
+
+Motivation: supervised needs labels; unsupervised detects novel attacks.
+
+Datasets: classic (HCRL/OTIDS), realistic (ROAD), synthetic (SynCAN). Briefly describe each and why ROAD matters. 
+GitHub
++3
+ocslab.hksecurity.net
++3
+ocslab.hksecurity.net
++3
+
+Methods: window features; IF, PCA; thresholding by normal validation percentile; optional AE.
+
+Results: per-dataset tables; ROC/PR for those with labels; generalization to ROAD. 
+arXiv
+
+Deployment: RAMN pipeline, domain alignment steps, real-time metrics.
+
+Limitations: drift, unseen ECUs, scenario changes; mitigation (weekly baseline refresh).
+
+Repro: exact window size, feature list, seeds, links to datasets.
+
+Practical to-do list (you can follow verbatim)
+
+Data & features
+
+ Download HCRL Car-Hacking; parse → features (100 ms). 
+ocslab.hksecurity.net
+
+ Download OTIDS; parse → features. 
+ocslab.hksecurity.net
+
+ Download ROAD; parse → features (priority). 
+0xsam.com
++1
+
+ (Optional) Download SynCAN; parse → features for pretraining. 
+GitHub
+
+Training & thresholds
+
+ Train IF on each dataset’s normal; set threshold at 99th percentile (normal-val).
+
+ Train PCA; threshold = 99th percentile reconstruction error (normal-val).
+
+ Log FP/hour on benign; compute recall/latency where labels exist.
+
+Selection
+
+ Choose the config that hits FP budget on ROAD and strong recall.
+
+ Save scaler, model(s), thresholds.
+
+Deployment
+
+ Capture 10 min RAMN+CARLA benign → recalibrate scaler mean/scale.
+
+ Run live pipeline with k=2 smoothing.
+
+ Attack bursts (replay/spoof/flood) with 0x7FF markers → measure latency & FP.
+
+Notes you can copy into your report
+
+Datasets. We trained unsupervised detectors on public CAN datasets spanning classic message-injection attacks and more stealthy manipulations (ROAD). HCRL Car-Hacking/OTIDS provide short, clearly labeled intrusions; ROAD contains diverse, realistic attacks and is recommended by recent work for fair benchmarking. 
+arXiv
++3
+ocslab.hksecurity.net
++3
+ocslab.hksecurity.net
++3
+
+Method. 100 ms statistical windows; Isolation Forest and PCA reconstruction, thresholds from normal-only validation (percentile rule), k-window temporal smoothing.
+
+Deployment. Domain alignment via scaler re-centering on RAMN normal; identical feature pipeline in real time; alert budget tuned to ≤1 FP/10 min.

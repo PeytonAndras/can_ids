@@ -4,6 +4,7 @@ featurize_can.py
 Converts raw CAN logs (timestamp,id,dlc,data) into time-windowed statistical features.
 """
 
+import argparse
 import os
 import sys
 import math
@@ -14,14 +15,22 @@ from collections import Counter
 
 # -------- CONFIG --------
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = PROJECT_ROOT / "data" / "raw"       # folder containing CSV logs
-OUT_DIR = PROJECT_ROOT / "data" / "processed" # where to save features
+DEFAULT_RAW_DIR = PROJECT_ROOT / "data" / "raw"       # folder containing CSV logs
+DEFAULT_OUT_DIR = PROJECT_ROOT / "data" / "processed" # where to save features
 WINDOW_MS = 100.0                   # size of each time window
 SAVE_PARQUET = False                # also save as Parquet
 MAX_PAYLOAD_BYTES = 8               # CAN payload length
 # -------------------------
 
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Extract windowed CAN features")
+    parser.add_argument("--input", type=Path, default=DEFAULT_RAW_DIR, help="Directory containing raw CSV files")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUT_DIR, help="Directory to write feature CSV files")
+    parser.add_argument("--window-ms", type=float, default=WINDOW_MS, help="Window size in milliseconds")
+    parser.add_argument("--save-parquet", action="store_true", help="Also emit Parquet outputs")
+    parser.add_argument("--prefix", type=str, default="", help="Optional prefix for generated feature filenames")
+    return parser.parse_args()
 
 def compute_entropy(counts):
     """Shannon entropy from a Counter of ID frequencies."""
@@ -68,19 +77,44 @@ def extract_payload_bytes(hex_payload, max_bytes=MAX_PAYLOAD_BYTES):
         values[i] = raw_bytes[i]
     return values
 
-def featurize_file(path, window_ms=WINDOW_MS):
-    print(f"[+] Processing {path.name}")
-    df = pd.read_csv(path)
+def load_raw_csv(path: Path) -> pd.DataFrame:
+    try:
+        return pd.read_csv(path)
+    except pd.errors.ParserError:
+        try:
+            return pd.read_csv(path, engine="python")
+        except Exception as exc:
+            raise ValueError(f"Unable to read {path}: {exc}") from exc
+
+
+def normalise_raw_frame(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
     df.columns = [c.strip().lower() for c in df.columns]
     rename_map = {
         "can_id": "id",
         "data_hex": "data",
     }
     df = df.rename(columns=rename_map)
+    return df
+
+
+def ensure_required_columns(df: pd.DataFrame, path: Path) -> pd.DataFrame:
     required = {"timestamp", "id", "dlc", "data"}
-    if not required.issubset(df.columns):
-        raise ValueError(f"Missing columns in {path}: {df.columns}")
-    df["timestamp"] = df["timestamp"].astype(float)
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"Missing columns in {path}: {sorted(missing)}")
+    df["timestamp"] = pd.to_numeric(df["timestamp"], errors="coerce")
+    df = df.dropna(subset=["timestamp", "id", "dlc"]).reset_index(drop=True)
+    df["dlc"] = pd.to_numeric(df["dlc"], errors="coerce").fillna(0).astype(int)
+    df["data"] = df["data"].fillna("").astype(str)
+    return df
+
+
+def featurize_file(path, window_ms=WINDOW_MS):
+    print(f"[+] Processing {path.name}")
+    df = load_raw_csv(path)
+    df = normalise_raw_frame(df)
+    df = ensure_required_columns(df, path)
     df = df.sort_values("timestamp").reset_index(drop=True)
     df["id_num"] = df["id"].apply(parse_hex)
     df["payload_var"] = df["data"].apply(payload_variance)
@@ -140,17 +174,28 @@ def featurize_file(path, window_ms=WINDOW_MS):
     return feat_df
 
 def main():
-    files = sorted(RAW_DIR.glob("*.csv"))
+    args = parse_args()
+    raw_dir = args.input
+    out_dir = args.output
+    window_ms = args.window_ms
+    save_parquet = args.save_parquet or SAVE_PARQUET
+    prefix = args.prefix
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    files = sorted(raw_dir.glob("*.csv"))
     if not files:
-        print(f"No CSV files found in {RAW_DIR}")
+        print(f"No CSV files found in {raw_dir}")
         sys.exit(0)
     all_feats = []
     for f in files:
         try:
-            feat_df = featurize_file(f)
-            out_csv = OUT_DIR / f"{f.stem}_features.csv"
+            feat_df = featurize_file(f, window_ms=window_ms)
+            suffix = f"{f.stem}_features.csv"
+            out_name = f"{prefix}_{suffix}" if prefix else suffix
+            out_csv = out_dir / out_name
             feat_df.to_csv(out_csv, index=False)
-            if SAVE_PARQUET:
+            if save_parquet:
                 feat_df.to_parquet(out_csv.with_suffix(".parquet"), index=False)
             all_feats.append(feat_df)
             print(f"  → saved {out_csv.name}")
@@ -159,10 +204,12 @@ def main():
 
     if all_feats:
         merged = pd.concat(all_feats, ignore_index=True)
-        merged.to_csv(OUT_DIR / "all_features.csv", index=False)
-        if SAVE_PARQUET:
-            merged.to_parquet(OUT_DIR / "all_features.parquet", index=False)
-        print(f"[✓] Merged features saved in {OUT_DIR}")
+        merged_name = "all_features.csv" if not prefix else f"{prefix}_all_features.csv"
+        merged_path = out_dir / merged_name
+        merged.to_csv(merged_path, index=False)
+        if save_parquet:
+            merged.to_parquet(merged_path.with_suffix(".parquet"), index=False)
+        print(f"[✓] Merged features saved in {merged_path}")
 
 if __name__ == "__main__":
     main()

@@ -6,7 +6,9 @@ Train unsupervised anomaly detectors for CAN feature windows.
 
 import argparse
 import json
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,6 +30,133 @@ ALL_FEATURES_NAME = "all_features.csv"
 RANDOM_STATE = 42
 DEFAULT_PERCENTILE = 99.0
 IGNORE_COLUMNS = {"file", "label"}
+
+
+@dataclass
+class DatasetSpec:
+    name: str
+    data_dir: Path
+    train_path: Path
+    val_path: Path
+
+
+@dataclass
+class DetectorResult:
+    name: str
+    threshold: float
+    train_scores: np.ndarray
+    val_scores: np.ndarray
+    model: Any
+
+
+def resolve_path(path_like: str | Path) -> Path:
+    path = Path(path_like).expanduser()
+    if not path.is_absolute():
+        path = (PROJECT_ROOT / path).resolve()
+    return path
+
+
+def parse_dataset_arguments(entries: Iterable[str] | None) -> list[DatasetSpec]:
+    specs: list[DatasetSpec] = []
+    if not entries:
+        return specs
+
+    for raw in entries:
+        raw = raw.strip()
+        if not raw:
+            continue
+        if "=" in raw:
+            name_part, path_part = raw.split("=", 1)
+            name = name_part.strip()
+            path_str = path_part.strip()
+        else:
+            path_str = raw
+            name = ""
+        data_dir = resolve_path(path_str)
+        if not name:
+            name = data_dir.name or "dataset"
+        if not data_dir.exists():
+            raise FileNotFoundError(f"Dataset directory {data_dir} does not exist for entry '{raw}'")
+        train_path = data_dir / "train.parquet"
+        val_path = data_dir / "val.parquet"
+        specs.append(DatasetSpec(name=name, data_dir=data_dir, train_path=train_path, val_path=val_path))
+    return specs
+
+
+def isolation_forest_scores(model: IsolationForest, X: np.ndarray) -> np.ndarray:
+    return -model.score_samples(X)
+
+
+def pca_reconstruction_scores(pca: PCA, X: np.ndarray) -> np.ndarray:
+    reconstructed = pca.inverse_transform(pca.transform(X))
+    return np.mean((X - reconstructed) ** 2, axis=1)
+
+
+def autoencoder_scores(ae: MLPRegressor, X: np.ndarray) -> np.ndarray:
+    reconstructed = ae.predict(X)
+    return np.mean((X - reconstructed) ** 2, axis=1)
+
+
+def compute_metrics(scores: np.ndarray, labels: np.ndarray | None, threshold: float,
+                    durations_ms: pd.Series | None = None) -> dict[str, Any]:
+    if labels is None or labels.size == 0:
+        return {}
+
+    labels_int = labels.astype(int)
+    positive_mask = labels_int != 0
+    predictions = scores >= threshold
+
+    tp = int(np.sum(predictions & positive_mask))
+    fp = int(np.sum(predictions & ~positive_mask))
+    tn = int(np.sum(~predictions & ~positive_mask))
+    fn = int(np.sum(~predictions & positive_mask))
+
+    precision = float(tp / (tp + fp)) if (tp + fp) > 0 else None
+    recall = float(tp / (tp + fn)) if (tp + fn) > 0 else None
+    if precision is not None and recall is not None and (precision + recall) > 0:
+        f1 = float(2 * precision * recall / (precision + recall))
+    else:
+        f1 = None
+    fpr = float(fp / (fp + tn)) if (fp + tn) > 0 else None
+    tpr = recall
+
+    fp_per_hour = None
+    if durations_ms is not None and not durations_ms.empty:
+        total_ms = float(durations_ms.sum())
+        if total_ms > 0:
+            total_hours = total_ms / 3_600_000.0
+            if total_hours > 0:
+                fp_per_hour = float(fp / total_hours)
+
+    return {
+        "threshold": float(threshold),
+        "tp": tp,
+        "fp": fp,
+        "tn": tn,
+        "fn": fn,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "fpr": fpr,
+        "tpr": tpr,
+        "support_pos": int(np.sum(positive_mask)),
+        "support_neg": int(np.sum(~positive_mask)),
+        "fp_per_hour": fp_per_hour,
+    }
+
+
+def load_additional_split(data_dir: Path) -> pd.DataFrame | None:
+    candidates = [data_dir / "test.parquet", data_dir / "test.csv"]
+    for candidate in candidates:
+        if candidate.exists():
+            return read_table(candidate)
+    fallback = data_dir / ALL_FEATURES_NAME
+    if fallback.exists():
+        try:
+            return pd.read_csv(fallback)
+        except Exception:
+            return None
+    return None
 
 
 def parse_args() -> argparse.Namespace:
@@ -153,7 +282,7 @@ def plot_scores(name: str, scores: np.ndarray, labels: np.ndarray | None, out_pa
 
 def train_isolation_forest(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.ndarray | None,
                            percentile: float, feature_names: list[str], scaler: StandardScaler,
-                           models_dir: Path, results_dir: Path) -> float:
+                           models_dir: Path, results_dir: Path) -> DetectorResult:
     print("[+] Training IsolationForest ...")
     iso = IsolationForest(
         n_estimators=300,
@@ -162,8 +291,8 @@ def train_isolation_forest(X_train: np.ndarray, X_val: np.ndarray, val_labels: n
         n_jobs=-1
     )
     iso.fit(X_train)
-    train_scores = -iso.score_samples(X_train)
-    val_scores = -iso.score_samples(X_val)
+    train_scores = isolation_forest_scores(iso, X_train)
+    val_scores = isolation_forest_scores(iso, X_val)
     threshold = score_percentile(val_scores, val_labels, percentile)
 
     dump({"model": iso, "scaler": scaler, "feature_names": feature_names}, models_dir / "isolation_forest.joblib")
@@ -171,20 +300,24 @@ def train_isolation_forest(X_train: np.ndarray, X_val: np.ndarray, val_labels: n
     save_scores("isolation_forest", "val", val_scores, val_labels, results_dir)
     plot_scores("IsolationForest", val_scores, val_labels, results_dir / "isolation_forest_val_hist.png")
     print(f"[✓] IsolationForest threshold ({percentile:.1f} pct) = {threshold:.6f}")
-    return threshold
+    return DetectorResult(
+        name="isolation_forest",
+        threshold=threshold,
+        train_scores=train_scores,
+        val_scores=val_scores,
+        model=iso,
+    )
 
 
 def train_pca_detector(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.ndarray | None,
                        percentile: float, feature_names: list[str], scaler: StandardScaler,
-                       models_dir: Path, results_dir: Path) -> float:
+                       models_dir: Path, results_dir: Path) -> DetectorResult:
     print("[+] Training PCA reconstruction detector ...")
     pca = PCA(n_components=0.95, svd_solver="full")
     pca.fit(X_train)
 
-    recon_train = pca.inverse_transform(pca.transform(X_train))
-    recon_val = pca.inverse_transform(pca.transform(X_val))
-    train_scores = np.mean((X_train - recon_train) ** 2, axis=1)
-    val_scores = np.mean((X_val - recon_val) ** 2, axis=1)
+    train_scores = pca_reconstruction_scores(pca, X_train)
+    val_scores = pca_reconstruction_scores(pca, X_val)
     threshold = score_percentile(val_scores, val_labels, percentile)
 
     dump({"pca": pca, "scaler": scaler, "feature_names": feature_names}, models_dir / "pca_reconstruction.joblib")
@@ -192,7 +325,13 @@ def train_pca_detector(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.nd
     save_scores("pca", "val", val_scores, val_labels, results_dir)
     plot_scores("PCA", val_scores, val_labels, results_dir / "pca_val_hist.png")
     print(f"[✓] PCA threshold ({percentile:.1f} pct) = {threshold:.6f}")
-    return threshold
+    return DetectorResult(
+        name="pca",
+        threshold=threshold,
+        train_scores=train_scores,
+        val_scores=val_scores,
+        model=pca,
+    )
 
 
 def parse_hidden_layers(hidden: str) -> tuple[int, ...]:
@@ -209,7 +348,7 @@ def parse_hidden_layers(hidden: str) -> tuple[int, ...]:
 
 def train_autoencoder(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.ndarray | None,
                       percentile: float, feature_names: list[str], scaler: StandardScaler,
-                      models_dir: Path, results_dir: Path, hidden: tuple[int, ...], max_iter: int) -> float:
+                      models_dir: Path, results_dir: Path, hidden: tuple[int, ...], max_iter: int) -> DetectorResult:
     print("[+] Training Autoencoder (MLPRegressor) ...")
     ae = MLPRegressor(
         hidden_layer_sizes=hidden,
@@ -220,10 +359,8 @@ def train_autoencoder(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.nda
         verbose=False
     )
     ae.fit(X_train, X_train)
-    recon_train = ae.predict(X_train)
-    recon_val = ae.predict(X_val)
-    train_scores = np.mean((X_train - recon_train) ** 2, axis=1)
-    val_scores = np.mean((X_val - recon_val) ** 2, axis=1)
+    train_scores = autoencoder_scores(ae, X_train)
+    val_scores = autoencoder_scores(ae, X_val)
     threshold = score_percentile(val_scores, val_labels, percentile)
 
     dump({"model": ae, "scaler": scaler, "feature_names": feature_names}, models_dir / "autoencoder.joblib")
@@ -231,7 +368,13 @@ def train_autoencoder(X_train: np.ndarray, X_val: np.ndarray, val_labels: np.nda
     save_scores("autoencoder", "val", val_scores, val_labels, results_dir)
     plot_scores("Autoencoder", val_scores, val_labels, results_dir / "autoencoder_val_hist.png")
     print(f"[✓] Autoencoder threshold ({percentile:.1f} pct) = {threshold:.6f}")
-    return threshold
+    return DetectorResult(
+        name="autoencoder",
+        threshold=threshold,
+        train_scores=train_scores,
+        val_scores=val_scores,
+        model=ae,
+    )
 
 
 def main() -> None:
