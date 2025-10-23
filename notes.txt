@@ -1,8 +1,21 @@
 Initial data captures
 --------------------
+RAW
+----
 - Logged columns: timestamp, can_id, dlc, data_hex, scenario, is_attack
 - ~10 minutes autonomous driving (city, no traffic)
 - ~10 minutes autonomous driving (city, with traffic)
+- ^^ CARLA & RAMN normal runs
+- HCRL normal data
+- HCRL attack data
+----------------------
+Processed 
+----------
+- carla data
+- hcrl_attack data
+- hcrl_normal data 
+- hcrl_full data (normal + attack)
+------------------------------------------------
 
 
 Feature extraction workflow
@@ -31,3 +44,76 @@ Next steps
 - Create evaluation script to score mixed normal/attack validation data and report ROC/AUC and confusion stats.
 - Document dependency setup (conda env, optional pyarrow) in README.
 - Validate unsupervised thresholds on additional attack-heavy captures.
+
+
+End-to-End Flow
+-------------------
+- Capture CAN frames (timestamp, arb ID, dlc, payload) either from RAMN hardware or HCRL dataset
+- feature_extractor_can_ids.py -> slices each log into fixed 100ms windows and computer tabular statistics (frame counts, entropy of IDs, inter-arrival timing, payload byte moments).
+	this results in tabls that live in the data/processed/<dataset>/ .
+- train_unsupervised.py -> loads those numeric columns, fits a standard scalar, then trains one or more anomaly detectors. It evaluates scores on a validation split
+and records the threshold at a chosen percentile (e.g 99.9%) so only the "most unusual" windows should trigger alerts. 
+- models/unsupervised/dataset/*.joblib -> bundle the trained estimator, scaler, and feature order. Threshold metadata goes to results/unsupervised/<dataset>/thresholds.json.
+These files feed deployment. 
+- deploy_realtime.py -> rebuilds the same features in real time, applies the scaler + detector(s), compares scores to thresholds, optionally requires
+consecutive anomalous windows, and logs alerts. 
+
+Why Unsupervised?
+------------------
+CAN attack labels are expensive in the real world. unsupervised detectors learn "normal" behavior only; anything outside that familar pattern is flagged.
+This lets training on benign traces yet still detect novel manipulation.
+
+Feature Choice
+-----------------
+The feature summarize both traffic volume and message content without relying on domain-specific decoding:
+- total_frames, unique_ids, entropy_ids capture how diverse traffic is.
+- mean_dt_ms, std_dt_ms describe timing regularity.
+- avg_dlc, avg_payload_var , and per-byte mean/std/min/max expose payload structure changes.
+These are fast to compute and robust to slight message shifts.
+
+Algorithms and Differences
+---------------------------
+IsolationForest
+----------------
+- Tree ensemble built to isolate anomalies: recursively splits feature space; rare points require fewer splits.
+- Outputs a score: higher means more isolated (anomalous).
+- Strengths: handles high-dimensional tabular data, robust to irrelevent features, no need for data scaling beyond standardization
+works well with mixed-scale features.
+- Weaknesses: relies on random splits; can struggle if anomalies resemble clusters of normal data or if feature scaling drifts.
+
+PCA Reconstruction Error
+-------------------------
+- Priniciple Componeent Analysis learns the dominant directions of variation in normal data; you keep components explaining, say, 95% variance. 
+- Reconstruct each sample from those components; the mean squared error between original and reconstruction is the anomaly score.
+- Strengths: interpretable, catches deviations that don't lie in the learned subspace; simple math.
+- Weaknesses: assumes linear relationships and centered data; sensitive to scaling and drifts; can miss anomalies that lie within the subspace
+but change variance structure.
+
+Autoencoder
+-----------
+- neural network trained to reproduce its input after going through a bottleneck (e.g 65->16->64)
+- Reconstruction error serves as the anomaly score (similar idea to PCA but nonlinear)
+- Strengths: models nonlinear patterns and complex correlations; potentially better fit for intricate payload relationships.
+- Weaknesses: needs more data and compute; risk of overfitting; harder to interpret; training stability depends on hyperparameters.
+
+Thresholding and Alerting 
+--------------------------
+- During validation, scores from normal windows set the baseline. Choosing percentile = 99.9 means only the top 0.1%
+highest score are considered anomalous; this controls the false positive rate 
+- in deployment, each window must exceed its detecotr's threshold. The ensemble config merges detectors (logical AND/OR or single-model).
+- smoothing.consecutive_window reduces jitter: requiring two consecutive anomalous windows (~=200ms) filters single-window noise. 
+
+Why Bundle Scaler + Feature order
+----------------------------------
+Live data must be processed exactly as in training. The .joblib files store the scaler parameters and feature column order, ensuring consistency even if feature extraction code evolves. 
+
+Experiment workflow
+-------------------
+1. Collect benign RAMN drive -> feed into training or just calibration to confirm FP/hour
+2. Inject or replay attacks -> measure detection latency (time from attack start to alert).
+3. Adjust threshold percentile or smoothing based on FP/latency trade-off
+4. Repeat across scenarios; log alerts in alerts.json
+
+This framework isolates each responsibility -- data prep, feature engineering, unsurpervised training, deployment-so you can reason
+about and improve components independently.
+
