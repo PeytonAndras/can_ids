@@ -117,3 +117,11 @@ Experiment workflow
 This framework isolates each responsibility -- data prep, feature engineering, unsurpervised training, deployment-so you can reason
 about and improve components independently.
 
+
+
+Experiments 
+-------------
+Tried to run carla_only and hcrl normal models -> a lot of false positives. 
+- fine tuning thresholds
+- reconfigured the deployment so my machine is the attacker sending malicious traffic, 
+- changed deploy_realtime.py so that it reads from lab machines can_log instead of directly from bus
