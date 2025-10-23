@@ -1,2 +1,6 @@
 2025-10-17 16:35:57,053 INFO Replaying CAN log from data/raw/can_log_3.csv
 2025-10-17 16:38:07,363 INFO Replaying CAN log from data/raw/can_log_3.csv
+2025-10-23 15:26:59,444 INFO Listening on CAN interface can0 (socketcan)
+2025-10-23 15:28:32,763 INFO Listening on CAN interface can0 (socketcan)
+2025-10-23 15:31:26,183 INFO Listening on CAN interface can0 (socketcan)
+2025-10-23 15:33:02,692 INFO Listening on CAN interface can0 (socketcan)

@@ -488,7 +488,7 @@ class CanListenerWorker:
             raise RuntimeError("python-can is required for live CAN mode. Install it with `pip install python-can`. ")
         self.channel = channel
         self.bustype = bustype
-        self.bus = can.ThreadSafeBus(channel=channel, bustype=bustype)
+        self.bus = can.ThreadSafeBus(channel=channel, interface=bustype)
 
     def frames(self) -> Iterable[Frame]:
         if can is None:  # pragma: no cover - defensive branch

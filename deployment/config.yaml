@@ -3,9 +3,9 @@ window_ms: 100
 smoothing:
   consecutive_windows: 2
 models:
-  isolation_forest: ../models/unsupervised/isolation_forest.joblib
-  pca: ../models/unsupervised/pca_reconstruction.joblib
-thresholds: ../results/unsupervised/thresholds.json
+  isolation_forest: ../models/unsupervised/carla_only/isolation_forest.joblib
+  pca: ../models/unsupervised/carla_only/pca_reconstruction.joblib
+thresholds: ../results/unsupervised/carla_only/thresholds.json
 ensemble: logical_and
 logging:
   path: logs/alerts.jsonl
