@@ -519,10 +519,12 @@ def build_alert_payload(
     thresholds: Dict[str, float],
     metrics: MetricsTracker,
     scaler: Any,
+    feature_names: List[str],
 ) -> Dict[str, Any]:
     z_scores = {}
     if scaler is not None and hasattr(scaler, "mean_") and hasattr(scaler, "scale_"):
-        for name, mean, scale in zip(scaler.feature_names_in_, scaler.mean_, scaler.scale_):  # type: ignore[attr-defined]
+        names = getattr(scaler, "feature_names_in_", feature_names)
+        for name, mean, scale in zip(names, scaler.mean_, scaler.scale_):
             value = float(features.get(name, 0.0))
             if scale != 0:
                 z_scores[name] = (value - float(mean)) / float(scale)
@@ -586,7 +588,7 @@ def run_pipeline(config: DeploymentConfig, live_channel: Optional[str], bustype:
                 is_anomaly = ensemble.is_anomaly(scores)
                 should_alert = metrics.register_window(is_anomaly, config.consecutive_windows)
                 if should_alert:
-                    payload = build_alert_payload(features, scores, ensemble.thresholds, metrics, ensemble.scaler)
+                    payload = build_alert_payload(features, scores, ensemble.thresholds, metrics, ensemble.scaler, ensemble.feature_names)
                     alert_sink.emit(payload)
         # Flush remainder window on shutdown
         final_features = aggregator.flush()
@@ -595,7 +597,7 @@ def run_pipeline(config: DeploymentConfig, live_channel: Optional[str], bustype:
             is_anomaly = ensemble.is_anomaly(scores)
             should_alert = metrics.register_window(is_anomaly, config.consecutive_windows)
             if should_alert:
-                payload = build_alert_payload(final_features, scores, ensemble.thresholds, metrics, ensemble.scaler)
+                payload = build_alert_payload(final_features, scores, ensemble.thresholds, metrics, ensemble.scaler, ensemble.feature_names)
                 alert_sink.emit(payload)
     finally:
         alert_sink.close()
