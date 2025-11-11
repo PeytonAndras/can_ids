@@ -43,7 +43,7 @@ IGNORED_COLUMNS = {"file", "label", "win"}
 DEFAULT_CONFIG_PATH = Path("deployment/config.yaml")
 DEFAULT_WINDOW_MS = 100.0
 DEFAULT_SMOOTHING_WINDOWS = 2
-SUPPORTED_ENSEMBLES = {"logical_and", "logical_or", "isolation_forest", "pca", "autoencoder"}
+SUPPORTED_ENSEMBLES = {"logical_and", "logical_or", "isolation_forest", "pca", "autoencoder", "lstm_autoencoder"}
 
 
 @dataclass
@@ -295,26 +295,86 @@ class ModelEnsemble:
         self.thresholds = load_thresholds(config.thresholds_path)
         self.feature_names: List[str] = []
         self.scaler = None
+        self.model_metadata: Dict[str, Dict[str, Any]] = {}
+        self.sequence_buffers: Dict[str, Deque[np.ndarray]] = {}
         self._load_models()
 
     def _load_models(self) -> None:
         resolved_models = ensure_model_paths(self.config.models)
         for name, path in resolved_models.items():
             artifact = joblib_load(path)
+            feature_names = artifact.get("feature_names")
+            scaler = artifact.get("scaler")
+
+            if not self.feature_names:
+                if feature_names is None or scaler is None:
+                    raise ValueError(f"Artifact at {path} is missing model, scaler, or feature names")
+                self.feature_names = list(feature_names)
+                self.scaler = scaler
+            if name == "lstm_autoencoder":
+                if feature_names is None or scaler is None:
+                    raise ValueError(f"LSTM artifact at {path} missing feature metadata")
+                sequence_len = artifact.get("sequence_len")
+                model_path = artifact.get("model_path")
+                model_config = artifact.get("model_config") or {}
+                if sequence_len is None or model_path is None:
+                    raise ValueError(f"LSTM artifact at {path} missing model_path or sequence_len")
+                model_path = Path(model_path)
+                if not model_path.is_absolute():
+                    model_path = (path.parent / model_path).resolve()
+                try:
+                    import torch
+                    from torch import nn
+                except ImportError as exc:
+                    raise RuntimeError("PyTorch is required to load LSTM autoencoder models. Install it via `pip install torch`.") from exc
+
+                class LSTMAutoencoderModule(nn.Module):
+                    def __init__(self, input_size: int, seq_length: int, encoder_hidden_size: int,
+                                 decoder_hidden_size: int, latent_size: int) -> None:
+                        super().__init__()
+                        self.seq_length = seq_length
+                        self.encoder = nn.LSTM(input_size, encoder_hidden_size, batch_first=True)
+                        self.encoder_fc = nn.Linear(encoder_hidden_size, latent_size)
+                        self.decoder_fc = nn.Linear(latent_size, decoder_hidden_size)
+                        self.decoder = nn.LSTM(decoder_hidden_size, input_size, batch_first=True)
+
+                    def forward(self, x):
+                        enc_out, _ = self.encoder(x)
+                        latent = self.encoder_fc(enc_out[:, -1, :])
+                        decoder_input = self.decoder_fc(latent).unsqueeze(1).repeat(1, self.seq_length, 1)
+                        decoded, _ = self.decoder(decoder_input)
+                        return decoded
+
+                input_dim = int(model_config.get("input_dim", len(self.feature_names)))
+                encoder_hidden = int(model_config.get("encoder_hidden", model_config.get("hidden", 128)))
+                decoder_hidden = int(model_config.get("decoder_hidden", encoder_hidden))
+                latent_dim = int(model_config.get("latent_dim", 32))
+                lstm_model = LSTMAutoencoderModule(
+                    input_size=input_dim,
+                    seq_length=int(sequence_len),
+                    encoder_hidden_size=encoder_hidden,
+                    decoder_hidden_size=decoder_hidden,
+                    latent_size=latent_dim,
+                )
+                state_dict = torch.load(model_path, map_location="cpu")
+                lstm_model.load_state_dict(state_dict)
+                lstm_model.eval()
+                self.models[name] = lstm_model
+                self.model_metadata[name] = {
+                    "sequence_len": int(sequence_len),
+                    "device": "cpu",
+                }
+                self.sequence_buffers[name] = deque(maxlen=int(sequence_len))
+                continue
+
             if name == "pca" and "pca" in artifact:
                 model = artifact["pca"]
-                scaler = artifact.get("scaler")
             else:
                 model = artifact.get("model") or artifact.get("pca")
-                scaler = artifact.get("scaler")
-            feature_names = artifact.get("feature_names")
 
             if model is None or scaler is None or feature_names is None:
                 raise ValueError(f"Artifact at {path} is missing model, scaler, or feature names")
 
-            if not self.feature_names:
-                self.feature_names = list(feature_names)
-                self.scaler = scaler
             self.models[name] = model
 
         if not self.feature_names:
@@ -334,6 +394,7 @@ class ModelEnsemble:
         X = self._align_features(features)
         X_scaled = self.scaler.transform(X) if self.scaler is not None else X
         scores: Dict[str, float] = {}
+        scaled_vector = X_scaled[0]
         for name, model in self.models.items():
             if name == "isolation_forest":
                 scores[name] = float(-model.score_samples(X_scaled)[0])
@@ -343,13 +404,41 @@ class ModelEnsemble:
             elif name == "autoencoder":
                 reconstructed = model.predict(X_scaled)
                 scores[name] = float(np.mean((X_scaled - reconstructed) ** 2))
+            elif name == "lstm_autoencoder":
+                scores[name] = self._score_lstm(name, scaled_vector)
             else:
                 raise ValueError(f"Unsupported detector name '{name}' in model config")
         return scores
 
+    def _score_lstm(self, name: str, scaled_vector: np.ndarray) -> float:
+        metadata = self.model_metadata.get(name) or {}
+        sequence_len = int(metadata.get("sequence_len", 0))
+        if sequence_len <= 1:
+            return float("nan")
+        buffer = self.sequence_buffers.setdefault(name, deque(maxlen=sequence_len))
+        buffer.append(np.asarray(scaled_vector, dtype=np.float32).copy())
+        if len(buffer) < sequence_len:
+            return float("nan")
+        sequence = np.stack(buffer, axis=0, dtype=np.float32)[np.newaxis, ...]
+        try:
+            import torch
+        except ImportError as exc:
+            raise RuntimeError("PyTorch is required to score LSTM autoencoder models. Install it via `pip install torch`.") from exc
+        model = self.models[name]
+        model.eval()
+        with torch.no_grad():
+            tensor = torch.from_numpy(sequence)
+            recon = model(tensor)
+            mse = torch.mean((tensor - recon) ** 2, dim=(1, 2))
+            return float(mse.cpu().item())
+
     def is_anomaly(self, scores: Dict[str, float]) -> bool:
         flags = {}
         for name, score in scores.items():
+            if score is None:
+                continue
+            if isinstance(score, float) and not math.isfinite(score):
+                continue
             threshold = self._lookup_threshold(name)
             if threshold is None:
                 continue
@@ -576,7 +665,10 @@ def build_alert_payload(
         "start_time": float(features.get("start_time", 0.0)),
         "end_time": float(features.get("end_time", 0.0)),
         "duration_ms": float(features.get("duration_ms", 0.0)),
-        "scores": {k: float(v) for k, v in scores.items()},
+        "scores": {
+            k: (float(v) if isinstance(v, (int, float)) and math.isfinite(float(v)) else None)
+            for k, v in scores.items()
+        },
         "thresholds": {k: float(thresholds.get(k, 0.0)) for k in scores.keys()},
         "metrics": {
             "total_windows": metrics.total_windows,
