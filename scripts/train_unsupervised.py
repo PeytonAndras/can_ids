@@ -208,6 +208,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lstm-epochs", type=int, default=50, help="Training epochs for the LSTM autoencoder")
     parser.add_argument("--lstm-batch-size", type=int, default=128, help="Batch size for the LSTM autoencoder")
     parser.add_argument("--lstm-learning-rate", type=float, default=1e-3, help="Learning rate for the LSTM autoencoder optimizer")
+    parser.add_argument(
+        "--drop-features",
+        type=str,
+        default="",
+        help="Comma-separated list of feature column names to remove before training",
+    )
     return parser.parse_args()
 
 
@@ -271,10 +277,21 @@ def maybe_create_split(train_path: Path, val_path: Path, data_dir: Path, val_rat
     return train_df, val_df
 
 
-def select_features(df: pd.DataFrame) -> list[str]:
+def materialize_drop_features(raw: str) -> set[str]:
+    drops: set[str] = set()
+    for chunk in raw.split(","):
+        name = chunk.strip()
+        if name:
+            drops.add(name)
+    return drops
+
+
+def select_features(df: pd.DataFrame, drop_features: set[str]) -> list[str]:
     cols = []
     for col in df.columns:
         if col in IGNORE_COLUMNS:
+            continue
+        if drop_features and col in drop_features:
             continue
         if pd.api.types.is_numeric_dtype(df[col]):
             cols.append(col)
@@ -653,7 +670,7 @@ def train_for_dataset(dataset_name: str, data_dir: Path, train_path: Path, val_p
                       use_autoencoder: bool, ae_hidden: str, ae_max_iter: int,
                       use_lstm_autoencoder: bool, lstm_seq_len: int, lstm_hidden: str,
                       lstm_latent: int, lstm_epochs: int, lstm_batch_size: int,
-                      lstm_learning_rate: float) -> None:
+                      lstm_learning_rate: float, drop_features: set[str]) -> None:
     print(f"\n=== Training dataset: {dataset_name} ===")
     models_dir.mkdir(parents=True, exist_ok=True)
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -662,7 +679,7 @@ def train_for_dataset(dataset_name: str, data_dir: Path, train_path: Path, val_p
 
     train_df = train_df.fillna(0)
     val_df = val_df.fillna(0)
-    feature_names = select_features(train_df)
+    feature_names = select_features(train_df, drop_features)
 
     scaler = StandardScaler()
     X_train = scaler.fit_transform(train_df[feature_names].values)
@@ -749,6 +766,7 @@ def train_for_dataset(dataset_name: str, data_dir: Path, train_path: Path, val_p
 
 def main() -> None:
     args = parse_args()
+    drop_features = materialize_drop_features(args.drop_features)
 
     dataset_specs = parse_dataset_arguments(args.datasets)
 
@@ -775,6 +793,7 @@ def main() -> None:
                 lstm_epochs=args.lstm_epochs,
                 lstm_batch_size=args.lstm_batch_size,
                 lstm_learning_rate=args.lstm_learning_rate,
+                drop_features=drop_features,
             )
     else:
         train_for_dataset(
@@ -796,6 +815,7 @@ def main() -> None:
             lstm_epochs=args.lstm_epochs,
             lstm_batch_size=args.lstm_batch_size,
             lstm_learning_rate=args.lstm_learning_rate,
+            drop_features=drop_features,
         )
 
 
