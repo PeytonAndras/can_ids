@@ -1,12 +1,12 @@
 # Deployment configuration for RAMN + CARLA real-time IDS
 window_ms: 100
 smoothing:
-  consecutive_windows: 3
+  consecutive_windows: 4  # raised for additional temporal filtering
 models:
   isolation_forest: ../models/unsupervised/carla_only/isolation_forest.joblib
   pca: ../models/unsupervised/carla_only/pca_reconstruction.joblib
 thresholds: ../results/unsupervised/carla_only/thresholds.json
-ensemble: isolation_forest
+ensemble: logical_and  # require all enabled detectors to exceed threshold
 logging:
   path: logs/alerts.jsonl
   level: INFO

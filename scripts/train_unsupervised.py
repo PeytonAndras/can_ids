@@ -29,7 +29,9 @@ VAL_DEFAULT = DATA_DIR / "val.parquet"
 ALL_FEATURES_NAME = "all_features.csv"
 RANDOM_STATE = 42
 DEFAULT_PERCENTILE = 99.0
-IGNORE_COLUMNS = {"file", "label"}
+# Exclude columns that are identifiers or non-stationary across sessions
+# (absolute timestamps, window indices) as they cause deployment drift.
+IGNORE_COLUMNS = {"file", "label", "win", "start_time", "end_time", "timestamp"}
 
 
 @dataclass

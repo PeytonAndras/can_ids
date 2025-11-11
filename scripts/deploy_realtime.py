@@ -40,6 +40,7 @@ except ImportError:  # pragma: no cover - optional dependency
 
 MAX_PAYLOAD_BYTES = 8
 IGNORED_COLUMNS = {"file", "label", "win"}
+TIME_LIKE_FEATURES = {"start_time", "end_time", "win"}
 DEFAULT_CONFIG_PATH = Path("deployment/config.yaml")
 DEFAULT_WINDOW_MS = 100.0
 DEFAULT_SMOOTHING_WINDOWS = 2
@@ -295,6 +296,7 @@ class ModelEnsemble:
         self.thresholds = load_thresholds(config.thresholds_path)
         self.feature_names: List[str] = []
         self.scaler = None
+        self._scaler_stats: Dict[str, tuple[float, float]] = {}
         self._load_models()
 
     def _load_models(self) -> None:
@@ -315,6 +317,15 @@ class ModelEnsemble:
             if not self.feature_names:
                 self.feature_names = list(feature_names)
                 self.scaler = scaler
+                # Cache scaler statistics per feature for quick lookup
+                try:
+                    names = list(getattr(scaler, "feature_names_in_", self.feature_names))
+                    means = list(getattr(scaler, "mean_", [0.0] * len(names)))
+                    scales = list(getattr(scaler, "scale_", [1.0] * len(names)))
+                    self._scaler_stats = {n: (float(m), float(s) if float(s) != 0.0 else 1.0)
+                                          for n, m, s in zip(names, means, scales)}
+                except Exception:
+                    self._scaler_stats = {}
             self.models[name] = model
 
         if not self.feature_names:
@@ -325,9 +336,17 @@ class ModelEnsemble:
             )
 
     def _align_features(self, features: pd.Series) -> np.ndarray:
-        aligned = []
+        aligned: List[float] = []
         for name in self.feature_names:
-            aligned.append(float(features.get(name, 0.0)))
+            if name in TIME_LIKE_FEATURES:
+                # Neutralize non-stationary time-like fields by using the scaler mean (z=0)
+                if self._scaler_stats and name in self._scaler_stats:
+                    mean_val, _ = self._scaler_stats[name]
+                    aligned.append(float(mean_val))
+                else:
+                    aligned.append(0.0)
+            else:
+                aligned.append(float(features.get(name, 0.0)))
         return np.array(aligned, dtype=float).reshape(1, -1)
 
     def score(self, features: pd.Series) -> Dict[str, float]:
