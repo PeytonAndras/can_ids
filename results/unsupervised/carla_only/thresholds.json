@@ -1,8 +1,8 @@
 {
-  "percentile": 99.9,
+  "percentile": 99.5,
   "values": {
-    "isolation_forest": 0.635288922495139,
-    "pca": 0.28687492539809173,
-    "lstm_autoencoder": 1.8232800688743611
+    "isolation_forest": 0.6253164063870621,
+    "pca": 0.19602162959121688,
+    "lstm_autoencoder": 1.7297236790000028
   }
 }
