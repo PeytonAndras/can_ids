@@ -1,7 +1,7 @@
 # Deployment configuration for RAMN + CARLA real-time IDS
 window_ms: 100
 smoothing:
-  consecutive_windows: 4  # raised for additional temporal filtering
+  consecutive_windows: 1  # No smoothing - immediate detection
 models:
   isolation_forest: ../models/unsupervised/no_traffic/isolation_forest.joblib
 thresholds: ../results/unsupervised/no_traffic/thresholds.json
