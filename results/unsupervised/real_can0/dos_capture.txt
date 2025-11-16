@@ -1,0 +1,1152 @@
+/home/parallels/miniconda3/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator ExtraTreeRegressor from version 1.5.2 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/parallels/miniconda3/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator IsolationForest from version 1.5.2 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/parallels/miniconda3/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator StandardScaler from version 1.5.2 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+/home/parallels/miniconda3/lib/python3.13/site-packages/sklearn/base.py:442: InconsistentVersionWarning: Trying to unpickle estimator PCA from version 1.5.2 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+2025-11-16 10:44:39,175 INFO Created a socket
+================================================================================
+DEBUG MODE: Showing all window scores
+================================================================================
+Thresholds: {'isolation_forest': 0.6763959495405117, 'pca': 20.0, 'lstm_autoencoder': 5.75775755405426}
+Ensemble strategy: logical_or
+Window size: 100.0ms
+================================================================================
+
+[   0.0s] Window    1   OK | IF=0.6596 (thresh=0.6764) ✗ | PCA=7.3069 (thresh=20.0000) ✗ | Frames=  20 IDs= 9 0x039_rate=  20/s
+[   0.1s] Window    2   OK | IF=0.5048 (thresh=0.6764) ✗ | PCA=7.0682 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.2s] Window    3   OK | IF=0.5183 (thresh=0.6764) ✗ | PCA=7.2446 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.3s] Window    4   OK | IF=0.5007 (thresh=0.6764) ✗ | PCA=7.0874 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.4s] Window    5   OK | IF=0.4968 (thresh=0.6764) ✗ | PCA=7.0098 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.5s] Window    6   OK | IF=0.4913 (thresh=0.6764) ✗ | PCA=7.0013 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.6s] Window    7   OK | IF=0.5301 (thresh=0.6764) ✗ | PCA=7.0884 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.7s] Window    8   OK | IF=0.4948 (thresh=0.6764) ✗ | PCA=6.8413 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.8s] Window    9   OK | IF=0.4993 (thresh=0.6764) ✗ | PCA=6.8591 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   0.9s] Window   10   OK | IF=0.4848 (thresh=0.6764) ✗ | PCA=7.0381 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.0s] Window   11   OK | IF=0.5134 (thresh=0.6764) ✗ | PCA=7.0289 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.1s] Window   12   OK | IF=0.5436 (thresh=0.6764) ✗ | PCA=7.0358 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.2s] Window   13   OK | IF=0.5058 (thresh=0.6764) ✗ | PCA=7.1616 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.3s] Window   14   OK | IF=0.5307 (thresh=0.6764) ✗ | PCA=6.9521 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.4s] Window   15   OK | IF=0.5043 (thresh=0.6764) ✗ | PCA=6.9504 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.5s] Window   16   OK | IF=0.5077 (thresh=0.6764) ✗ | PCA=7.0354 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.6s] Window   17   OK | IF=0.5061 (thresh=0.6764) ✗ | PCA=7.0695 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.7s] Window   18   OK | IF=0.5235 (thresh=0.6764) ✗ | PCA=6.9605 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.8s] Window   19   OK | IF=0.5006 (thresh=0.6764) ✗ | PCA=6.8760 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   1.9s] Window   20   OK | IF=0.5026 (thresh=0.6764) ✗ | PCA=6.9574 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.0s] Window   21   OK | IF=0.5035 (thresh=0.6764) ✗ | PCA=6.8825 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.1s] Window   22   OK | IF=0.5191 (thresh=0.6764) ✗ | PCA=6.7400 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.2s] Window   23   OK | IF=0.5271 (thresh=0.6764) ✗ | PCA=6.9269 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.3s] Window   24   OK | IF=0.5002 (thresh=0.6764) ✗ | PCA=6.9298 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.4s] Window   25   OK | IF=0.5159 (thresh=0.6764) ✗ | PCA=7.0026 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.5s] Window   26   OK | IF=0.4829 (thresh=0.6764) ✗ | PCA=6.9410 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.6s] Window   27   OK | IF=0.5069 (thresh=0.6764) ✗ | PCA=7.0613 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.7s] Window   28   OK | IF=0.4834 (thresh=0.6764) ✗ | PCA=6.9344 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.8s] Window   29   OK | IF=0.4886 (thresh=0.6764) ✗ | PCA=6.9120 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   2.9s] Window   30   OK | IF=0.4948 (thresh=0.6764) ✗ | PCA=6.8405 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.0s] Window   31   OK | IF=0.5011 (thresh=0.6764) ✗ | PCA=6.8739 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.1s] Window   32   OK | IF=0.4982 (thresh=0.6764) ✗ | PCA=6.7780 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.2s] Window   33   OK | IF=0.4966 (thresh=0.6764) ✗ | PCA=6.8007 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.3s] Window   34   OK | IF=0.5213 (thresh=0.6764) ✗ | PCA=6.9347 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.4s] Window   35   OK | IF=0.5087 (thresh=0.6764) ✗ | PCA=7.0313 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.5s] Window   36   OK | IF=0.5284 (thresh=0.6764) ✗ | PCA=6.8774 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.6s] Window   37   OK | IF=0.5253 (thresh=0.6764) ✗ | PCA=6.7903 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.7s] Window   38   OK | IF=0.5157 (thresh=0.6764) ✗ | PCA=6.7825 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.8s] Window   39   OK | IF=0.4910 (thresh=0.6764) ✗ | PCA=6.7863 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   3.9s] Window   40   OK | IF=0.5098 (thresh=0.6764) ✗ | PCA=6.7950 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.0s] Window   41   OK | IF=0.4943 (thresh=0.6764) ✗ | PCA=6.9718 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.1s] Window   42   OK | IF=0.4995 (thresh=0.6764) ✗ | PCA=6.9904 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.2s] Window   43   OK | IF=0.4994 (thresh=0.6764) ✗ | PCA=6.6979 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.3s] Window   44   OK | IF=0.5098 (thresh=0.6764) ✗ | PCA=6.8542 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.4s] Window   45   OK | IF=0.5134 (thresh=0.6764) ✗ | PCA=7.0032 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.5s] Window   46   OK | IF=0.4806 (thresh=0.6764) ✗ | PCA=6.8050 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.6s] Window   47   OK | IF=0.4940 (thresh=0.6764) ✗ | PCA=6.7343 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.7s] Window   48   OK | IF=0.4996 (thresh=0.6764) ✗ | PCA=7.0331 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.8s] Window   49   OK | IF=0.5080 (thresh=0.6764) ✗ | PCA=6.9665 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   4.9s] Window   50   OK | IF=0.5070 (thresh=0.6764) ✗ | PCA=6.8887 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.0s] Window   51   OK | IF=0.4890 (thresh=0.6764) ✗ | PCA=6.7903 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.1s] Window   52   OK | IF=0.4792 (thresh=0.6764) ✗ | PCA=6.8240 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.2s] Window   53   OK | IF=0.5189 (thresh=0.6764) ✗ | PCA=7.1874 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.3s] Window   54   OK | IF=0.4846 (thresh=0.6764) ✗ | PCA=6.9543 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.4s] Window   55   OK | IF=0.5088 (thresh=0.6764) ✗ | PCA=6.7464 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.5s] Window   56   OK | IF=0.4946 (thresh=0.6764) ✗ | PCA=6.8467 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.6s] Window   57   OK | IF=0.4854 (thresh=0.6764) ✗ | PCA=6.7953 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.7s] Window   58   OK | IF=0.5281 (thresh=0.6764) ✗ | PCA=6.9513 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.8s] Window   59   OK | IF=0.5064 (thresh=0.6764) ✗ | PCA=6.7927 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.9s] Window   60   OK | IF=0.5276 (thresh=0.6764) ✗ | PCA=6.9748 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.0s] Window   61   OK | IF=0.5077 (thresh=0.6764) ✗ | PCA=6.9094 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.1s] Window   62   OK | IF=0.5026 (thresh=0.6764) ✗ | PCA=6.9326 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.2s] Window   63   OK | IF=0.4952 (thresh=0.6764) ✗ | PCA=6.9799 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.3s] Window   64   OK | IF=0.4807 (thresh=0.6764) ✗ | PCA=6.9035 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.4s] Window   65   OK | IF=0.5017 (thresh=0.6764) ✗ | PCA=6.9944 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.5s] Window   66   OK | IF=0.5047 (thresh=0.6764) ✗ | PCA=6.9747 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.6s] Window   67   OK | IF=0.5200 (thresh=0.6764) ✗ | PCA=6.7760 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.7s] Window   68   OK | IF=0.4938 (thresh=0.6764) ✗ | PCA=7.2052 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.8s] Window   69   OK | IF=0.4874 (thresh=0.6764) ✗ | PCA=7.0049 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   6.9s] Window   70   OK | IF=0.4754 (thresh=0.6764) ✗ | PCA=6.8561 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.0s] Window   71   OK | IF=0.5024 (thresh=0.6764) ✗ | PCA=6.8789 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.1s] Window   72   OK | IF=0.4952 (thresh=0.6764) ✗ | PCA=6.8962 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.2s] Window   73   OK | IF=0.5157 (thresh=0.6764) ✗ | PCA=7.0364 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.3s] Window   74   OK | IF=0.4835 (thresh=0.6764) ✗ | PCA=6.9988 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.4s] Window   75   OK | IF=0.4858 (thresh=0.6764) ✗ | PCA=6.9098 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.5s] Window   76   OK | IF=0.4855 (thresh=0.6764) ✗ | PCA=6.8091 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.6s] Window   77   OK | IF=0.4870 (thresh=0.6764) ✗ | PCA=6.7749 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.7s] Window   78   OK | IF=0.4727 (thresh=0.6764) ✗ | PCA=6.8291 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.8s] Window   79   OK | IF=0.4852 (thresh=0.6764) ✗ | PCA=6.7901 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   7.9s] Window   80   OK | IF=0.4940 (thresh=0.6764) ✗ | PCA=6.9183 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.0s] Window   81   OK | IF=0.5151 (thresh=0.6764) ✗ | PCA=6.9850 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.1s] Window   82   OK | IF=0.5108 (thresh=0.6764) ✗ | PCA=7.1142 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.2s] Window   83   OK | IF=0.4857 (thresh=0.6764) ✗ | PCA=6.6259 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.3s] Window   84   OK | IF=0.5042 (thresh=0.6764) ✗ | PCA=6.7431 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.4s] Window   85   OK | IF=0.5102 (thresh=0.6764) ✗ | PCA=6.8717 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.5s] Window   86   OK | IF=0.5272 (thresh=0.6764) ✗ | PCA=6.7918 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.6s] Window   87   OK | IF=0.5094 (thresh=0.6764) ✗ | PCA=6.9844 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.7s] Window   88   OK | IF=0.4789 (thresh=0.6764) ✗ | PCA=6.8353 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.8s] Window   89   OK | IF=0.4820 (thresh=0.6764) ✗ | PCA=6.8955 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   8.9s] Window   90   OK | IF=0.5157 (thresh=0.6764) ✗ | PCA=6.9089 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.0s] Window   91   OK | IF=0.5207 (thresh=0.6764) ✗ | PCA=6.9246 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.1s] Window   92   OK | IF=0.4743 (thresh=0.6764) ✗ | PCA=6.8844 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.2s] Window   93   OK | IF=0.4780 (thresh=0.6764) ✗ | PCA=6.8906 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.3s] Window   94   OK | IF=0.4895 (thresh=0.6764) ✗ | PCA=6.9821 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.4s] Window   95   OK | IF=0.4819 (thresh=0.6764) ✗ | PCA=6.9852 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.5s] Window   96   OK | IF=0.5085 (thresh=0.6764) ✗ | PCA=7.1803 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.6s] Window   97   OK | IF=0.5078 (thresh=0.6764) ✗ | PCA=6.7997 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.7s] Window   98   OK | IF=0.4898 (thresh=0.6764) ✗ | PCA=6.8633 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.8s] Window   99   OK | IF=0.4947 (thresh=0.6764) ✗ | PCA=6.9337 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   9.9s] Window  100   OK | IF=0.4932 (thresh=0.6764) ✗ | PCA=6.9793 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.0s] Window  101   OK | IF=0.4962 (thresh=0.6764) ✗ | PCA=6.8887 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.1s] Window  102   OK | IF=0.4703 (thresh=0.6764) ✗ | PCA=6.8063 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.2s] Window  103   OK | IF=0.4830 (thresh=0.6764) ✗ | PCA=6.7942 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.3s] Window  104   OK | IF=0.5415 (thresh=0.6764) ✗ | PCA=7.0603 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.4s] Window  105   OK | IF=0.5157 (thresh=0.6764) ✗ | PCA=6.8189 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.5s] Window  106   OK | IF=0.4859 (thresh=0.6764) ✗ | PCA=6.7628 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.6s] Window  107   OK | IF=0.4889 (thresh=0.6764) ✗ | PCA=6.8842 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.7s] Window  108   OK | IF=0.5097 (thresh=0.6764) ✗ | PCA=6.9775 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.8s] Window  109   OK | IF=0.4968 (thresh=0.6764) ✗ | PCA=6.8032 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  10.9s] Window  110   OK | IF=0.4992 (thresh=0.6764) ✗ | PCA=6.8187 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.0s] Window  111   OK | IF=0.5120 (thresh=0.6764) ✗ | PCA=6.6806 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.1s] Window  112   OK | IF=0.5071 (thresh=0.6764) ✗ | PCA=6.7190 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.2s] Window  113   OK | IF=0.5173 (thresh=0.6764) ✗ | PCA=6.9415 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.3s] Window  114   OK | IF=0.5074 (thresh=0.6764) ✗ | PCA=6.9168 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.4s] Window  115   OK | IF=0.5066 (thresh=0.6764) ✗ | PCA=6.8028 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.5s] Window  116   OK | IF=0.5240 (thresh=0.6764) ✗ | PCA=6.9816 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.6s] Window  117   OK | IF=0.5036 (thresh=0.6764) ✗ | PCA=6.7036 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.7s] Window  118   OK | IF=0.4969 (thresh=0.6764) ✗ | PCA=6.6966 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.8s] Window  119   OK | IF=0.4904 (thresh=0.6764) ✗ | PCA=6.7073 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  11.9s] Window  120   OK | IF=0.5455 (thresh=0.6764) ✗ | PCA=6.7855 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.0s] Window  121   OK | IF=0.4948 (thresh=0.6764) ✗ | PCA=6.6202 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.1s] Window  122   OK | IF=0.4689 (thresh=0.6764) ✗ | PCA=6.6394 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.2s] Window  123   OK | IF=0.4931 (thresh=0.6764) ✗ | PCA=6.8947 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.3s] Window  124   OK | IF=0.4881 (thresh=0.6764) ✗ | PCA=6.7565 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.4s] Window  125   OK | IF=0.5044 (thresh=0.6764) ✗ | PCA=6.8596 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.5s] Window  126   OK | IF=0.4835 (thresh=0.6764) ✗ | PCA=6.8139 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.6s] Window  127   OK | IF=0.5043 (thresh=0.6764) ✗ | PCA=6.7841 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.7s] Window  128   OK | IF=0.4738 (thresh=0.6764) ✗ | PCA=6.6046 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.8s] Window  129   OK | IF=0.5125 (thresh=0.6764) ✗ | PCA=6.8888 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  12.9s] Window  130   OK | IF=0.4872 (thresh=0.6764) ✗ | PCA=6.6596 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.0s] Window  131   OK | IF=0.5011 (thresh=0.6764) ✗ | PCA=6.9463 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.1s] Window  132   OK | IF=0.5103 (thresh=0.6764) ✗ | PCA=6.8789 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.2s] Window  133   OK | IF=0.5049 (thresh=0.6764) ✗ | PCA=6.7902 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.3s] Window  134   OK | IF=0.5083 (thresh=0.6764) ✗ | PCA=7.1082 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.4s] Window  135   OK | IF=0.5006 (thresh=0.6764) ✗ | PCA=6.8847 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.5s] Window  136   OK | IF=0.5031 (thresh=0.6764) ✗ | PCA=6.7738 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.6s] Window  137   OK | IF=0.5237 (thresh=0.6764) ✗ | PCA=6.6946 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.7s] Window  138   OK | IF=0.4940 (thresh=0.6764) ✗ | PCA=6.7081 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.8s] Window  139   OK | IF=0.5195 (thresh=0.6764) ✗ | PCA=6.7788 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  13.9s] Window  140   OK | IF=0.5254 (thresh=0.6764) ✗ | PCA=6.9556 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.0s] Window  141   OK | IF=0.5094 (thresh=0.6764) ✗ | PCA=6.8043 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.1s] Window  142   OK | IF=0.5058 (thresh=0.6764) ✗ | PCA=6.6776 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.2s] Window  143   OK | IF=0.4983 (thresh=0.6764) ✗ | PCA=6.6582 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.3s] Window  144   OK | IF=0.5144 (thresh=0.6764) ✗ | PCA=6.8804 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.4s] Window  145   OK | IF=0.5004 (thresh=0.6764) ✗ | PCA=6.8515 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.5s] Window  146   OK | IF=0.4959 (thresh=0.6764) ✗ | PCA=6.9611 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.6s] Window  147   OK | IF=0.4994 (thresh=0.6764) ✗ | PCA=6.7624 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.7s] Window  148   OK | IF=0.4847 (thresh=0.6764) ✗ | PCA=6.7436 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.8s] Window  149   OK | IF=0.4869 (thresh=0.6764) ✗ | PCA=6.6124 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  14.9s] Window  150   OK | IF=0.5034 (thresh=0.6764) ✗ | PCA=6.9008 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.0s] Window  151   OK | IF=0.4933 (thresh=0.6764) ✗ | PCA=6.9055 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.1s] Window  152   OK | IF=0.5006 (thresh=0.6764) ✗ | PCA=7.0057 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.2s] Window  153   OK | IF=0.4964 (thresh=0.6764) ✗ | PCA=6.7831 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.3s] Window  154   OK | IF=0.5026 (thresh=0.6764) ✗ | PCA=6.6349 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.4s] Window  155   OK | IF=0.4970 (thresh=0.6764) ✗ | PCA=6.5778 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.5s] Window  156   OK | IF=0.4969 (thresh=0.6764) ✗ | PCA=6.7074 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.6s] Window  157   OK | IF=0.5305 (thresh=0.6764) ✗ | PCA=6.8688 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.7s] Window  158   OK | IF=0.5170 (thresh=0.6764) ✗ | PCA=6.7479 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.8s] Window  159   OK | IF=0.5067 (thresh=0.6764) ✗ | PCA=6.5900 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  15.9s] Window  160   OK | IF=0.5140 (thresh=0.6764) ✗ | PCA=6.6047 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.0s] Window  161   OK | IF=0.4818 (thresh=0.6764) ✗ | PCA=6.7941 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.1s] Window  162   OK | IF=0.5043 (thresh=0.6764) ✗ | PCA=6.7573 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.2s] Window  163   OK | IF=0.5120 (thresh=0.6764) ✗ | PCA=6.8047 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.3s] Window  164   OK | IF=0.4925 (thresh=0.6764) ✗ | PCA=6.8680 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.4s] Window  165   OK | IF=0.5027 (thresh=0.6764) ✗ | PCA=6.8407 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.5s] Window  166   OK | IF=0.5079 (thresh=0.6764) ✗ | PCA=6.7348 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.6s] Window  167   OK | IF=0.4991 (thresh=0.6764) ✗ | PCA=6.8628 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.7s] Window  168   OK | IF=0.4829 (thresh=0.6764) ✗ | PCA=6.7636 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.8s] Window  169   OK | IF=0.4850 (thresh=0.6764) ✗ | PCA=6.6062 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  16.9s] Window  170   OK | IF=0.4907 (thresh=0.6764) ✗ | PCA=7.0955 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.0s] Window  171   OK | IF=0.4909 (thresh=0.6764) ✗ | PCA=6.8374 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.1s] Window  172   OK | IF=0.4801 (thresh=0.6764) ✗ | PCA=6.5310 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.2s] Window  173   OK | IF=0.5075 (thresh=0.6764) ✗ | PCA=6.9645 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.3s] Window  174   OK | IF=0.4895 (thresh=0.6764) ✗ | PCA=6.8141 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.4s] Window  175   OK | IF=0.4892 (thresh=0.6764) ✗ | PCA=6.7459 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.5s] Window  176   OK | IF=0.4877 (thresh=0.6764) ✗ | PCA=6.5493 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.6s] Window  177   OK | IF=0.4887 (thresh=0.6764) ✗ | PCA=6.7829 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.7s] Window  178   OK | IF=0.4948 (thresh=0.6764) ✗ | PCA=6.5407 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.8s] Window  179   OK | IF=0.5097 (thresh=0.6764) ✗ | PCA=6.7051 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  17.9s] Window  180   OK | IF=0.5110 (thresh=0.6764) ✗ | PCA=7.1055 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.0s] Window  181   OK | IF=0.4788 (thresh=0.6764) ✗ | PCA=6.7480 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.1s] Window  182   OK | IF=0.4847 (thresh=0.6764) ✗ | PCA=6.6895 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.2s] Window  183   OK | IF=0.5317 (thresh=0.6764) ✗ | PCA=6.8320 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.3s] Window  184   OK | IF=0.5051 (thresh=0.6764) ✗ | PCA=6.7286 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.4s] Window  185   OK | IF=0.5064 (thresh=0.6764) ✗ | PCA=6.6974 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.5s] Window  186   OK | IF=0.4943 (thresh=0.6764) ✗ | PCA=6.8431 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.6s] Window  187   OK | IF=0.5122 (thresh=0.6764) ✗ | PCA=6.6879 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.7s] Window  188   OK | IF=0.5056 (thresh=0.6764) ✗ | PCA=6.6341 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.8s] Window  189   OK | IF=0.5144 (thresh=0.6764) ✗ | PCA=6.6452 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  18.9s] Window  190   OK | IF=0.4851 (thresh=0.6764) ✗ | PCA=6.7577 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.0s] Window  191   OK | IF=0.4878 (thresh=0.6764) ✗ | PCA=6.8796 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.1s] Window  192   OK | IF=0.5159 (thresh=0.6764) ✗ | PCA=7.0840 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.2s] Window  193   OK | IF=0.4947 (thresh=0.6764) ✗ | PCA=6.8922 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.3s] Window  194   OK | IF=0.4863 (thresh=0.6764) ✗ | PCA=6.7041 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.4s] Window  195   OK | IF=0.5026 (thresh=0.6764) ✗ | PCA=6.7056 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.5s] Window  196 🚨 ALERT | IF=0.5735 (thresh=0.6764) ✗ | PCA=221.6095 (thresh=20.0000) ✓ | Frames= 109 IDs=18 0x039_rate= 109/s
+  ⚠️  ALERT #1
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.6s] Window  197 🚨 ALERT | IF=0.5906 (thresh=0.6764) ✗ | PCA=354.0827 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #2
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.7s] Window  198 🚨 ALERT | IF=0.5928 (thresh=0.6764) ✗ | PCA=372.5186 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #3
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.8s] Window  199 🚨 ALERT | IF=0.6072 (thresh=0.6764) ✗ | PCA=366.2186 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #4
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  19.9s] Window  200 🚨 ALERT | IF=0.6012 (thresh=0.6764) ✗ | PCA=297.7451 (thresh=20.0000) ✓ | Frames= 121 IDs=18 0x039_rate= 121/s
+  ⚠️  ALERT #5
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.0s] Window  201 🚨 ALERT | IF=0.6075 (thresh=0.6764) ✗ | PCA=365.1366 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #6
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.1s] Window  202 🚨 ALERT | IF=0.6020 (thresh=0.6764) ✗ | PCA=371.5887 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #7
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.2s] Window  203 🚨 ALERT | IF=0.6053 (thresh=0.6764) ✗ | PCA=372.9610 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #8
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.3s] Window  204 🚨 ALERT | IF=0.5989 (thresh=0.6764) ✗ | PCA=366.6908 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #9
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.4s] Window  205 🚨 ALERT | IF=0.6035 (thresh=0.6764) ✗ | PCA=369.9039 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #10
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.5s] Window  206 🚨 ALERT | IF=0.5985 (thresh=0.6764) ✗ | PCA=350.1020 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #11
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.6s] Window  207 🚨 ALERT | IF=0.6119 (thresh=0.6764) ✗ | PCA=358.0370 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #12
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.7s] Window  208 🚨 ALERT | IF=0.6122 (thresh=0.6764) ✗ | PCA=351.4960 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #13
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.8s] Window  209 🚨 ALERT | IF=0.6176 (thresh=0.6764) ✗ | PCA=357.0276 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #14
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  20.9s] Window  210 🚨 ALERT | IF=0.5968 (thresh=0.6764) ✗ | PCA=345.0105 (thresh=20.0000) ✓ | Frames= 129 IDs=18 0x039_rate= 129/s
+  ⚠️  ALERT #15
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.0s] Window  211 🚨 ALERT | IF=0.6158 (thresh=0.6764) ✗ | PCA=338.5358 (thresh=20.0000) ✓ | Frames= 128 IDs=18 0x039_rate= 128/s
+  ⚠️  ALERT #16
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.1s] Window  212 🚨 ALERT | IF=0.6069 (thresh=0.6764) ✗ | PCA=317.4669 (thresh=20.0000) ✓ | Frames= 124 IDs=18 0x039_rate= 124/s
+  ⚠️  ALERT #17
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.2s] Window  213 🚨 ALERT | IF=0.6061 (thresh=0.6764) ✗ | PCA=384.4991 (thresh=20.0000) ✓ | Frames= 135 IDs=18 0x039_rate= 135/s
+  ⚠️  ALERT #18
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.3s] Window  214 🚨 ALERT | IF=0.5982 (thresh=0.6764) ✗ | PCA=364.8693 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #19
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.4s] Window  215 🚨 ALERT | IF=0.6070 (thresh=0.6764) ✗ | PCA=364.8147 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #20
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.5s] Window  216 🚨 ALERT | IF=0.6102 (thresh=0.6764) ✗ | PCA=363.4763 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #21
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.6s] Window  217 🚨 ALERT | IF=0.6016 (thresh=0.6764) ✗ | PCA=358.5764 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #22
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.7s] Window  218 🚨 ALERT | IF=0.5991 (thresh=0.6764) ✗ | PCA=339.5747 (thresh=20.0000) ✓ | Frames= 128 IDs=18 0x039_rate= 128/s
+  ⚠️  ALERT #23
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.8s] Window  219 🚨 ALERT | IF=0.5939 (thresh=0.6764) ✗ | PCA=363.4297 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #24
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  21.9s] Window  220 🚨 ALERT | IF=0.6095 (thresh=0.6764) ✗ | PCA=352.1524 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #25
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.0s] Window  221 🚨 ALERT | IF=0.5995 (thresh=0.6764) ✗ | PCA=358.1536 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #26
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.1s] Window  222 🚨 ALERT | IF=0.5909 (thresh=0.6764) ✗ | PCA=302.4375 (thresh=20.0000) ✓ | Frames= 122 IDs=18 0x039_rate= 122/s
+  ⚠️  ALERT #27
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.2s] Window  223 🚨 ALERT | IF=0.5960 (thresh=0.6764) ✗ | PCA=346.1722 (thresh=20.0000) ✓ | Frames= 129 IDs=18 0x039_rate= 129/s
+  ⚠️  ALERT #28
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.3s] Window  224 🚨 ALERT | IF=0.5969 (thresh=0.6764) ✗ | PCA=377.1880 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #29
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.4s] Window  225 🚨 ALERT | IF=0.5985 (thresh=0.6764) ✗ | PCA=370.5837 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #30
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.5s] Window  226 🚨 ALERT | IF=0.5841 (thresh=0.6764) ✗ | PCA=295.6465 (thresh=20.0000) ✓ | Frames= 121 IDs=18 0x039_rate= 121/s
+  ⚠️  ALERT #31
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.6s] Window  227 🚨 ALERT | IF=0.5935 (thresh=0.6764) ✗ | PCA=333.6751 (thresh=20.0000) ✓ | Frames= 127 IDs=18 0x039_rate= 127/s
+  ⚠️  ALERT #32
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.7s] Window  228 🚨 ALERT | IF=0.6057 (thresh=0.6764) ✗ | PCA=371.3325 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #33
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.8s] Window  229 🚨 ALERT | IF=0.5977 (thresh=0.6764) ✗ | PCA=363.6305 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #34
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  22.9s] Window  230 🚨 ALERT | IF=0.5982 (thresh=0.6764) ✗ | PCA=370.1810 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #35
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.0s] Window  231 🚨 ALERT | IF=0.6118 (thresh=0.6764) ✗ | PCA=345.1780 (thresh=20.0000) ✓ | Frames= 129 IDs=18 0x039_rate= 129/s
+  ⚠️  ALERT #36
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.1s] Window  232 🚨 ALERT | IF=0.6070 (thresh=0.6764) ✗ | PCA=357.8743 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #37
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.2s] Window  233 🚨 ALERT | IF=0.6007 (thresh=0.6764) ✗ | PCA=356.6689 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #38
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.3s] Window  234 🚨 ALERT | IF=0.5775 (thresh=0.6764) ✗ | PCA=170.6130 (thresh=20.0000) ✓ | Frames= 101 IDs=18 0x039_rate= 101/s
+  ⚠️  ALERT #39
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.4s] Window  235 🚨 ALERT | IF=0.6126 (thresh=0.6764) ✗ | PCA=376.2244 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #40
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.5s] Window  236 🚨 ALERT | IF=0.5961 (thresh=0.6764) ✗ | PCA=369.4477 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #41
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.6s] Window  237 🚨 ALERT | IF=0.5924 (thresh=0.6764) ✗ | PCA=363.0322 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #42
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.7s] Window  238 🚨 ALERT | IF=0.6068 (thresh=0.6764) ✗ | PCA=370.5659 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #43
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.8s] Window  239 🚨 ALERT | IF=0.6056 (thresh=0.6764) ✗ | PCA=357.7685 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #44
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  23.9s] Window  240 🚨 ALERT | IF=0.6169 (thresh=0.6764) ✗ | PCA=368.8831 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #45
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.0s] Window  241 🚨 ALERT | IF=0.6011 (thresh=0.6764) ✗ | PCA=357.9553 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #46
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.1s] Window  242 🚨 ALERT | IF=0.6103 (thresh=0.6764) ✗ | PCA=358.4334 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #47
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.2s] Window  243 🚨 ALERT | IF=0.5933 (thresh=0.6764) ✗ | PCA=351.8846 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #48
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.3s] Window  244 🚨 ALERT | IF=0.6048 (thresh=0.6764) ✗ | PCA=370.8582 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #49
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.4s] Window  245 🚨 ALERT | IF=0.5702 (thresh=0.6764) ✗ | PCA=200.5457 (thresh=20.0000) ✓ | Frames= 106 IDs=18 0x039_rate= 106/s
+  ⚠️  ALERT #50
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.5s] Window  246 🚨 ALERT | IF=0.5948 (thresh=0.6764) ✗ | PCA=320.2259 (thresh=20.0000) ✓ | Frames= 125 IDs=18 0x039_rate= 125/s
+  ⚠️  ALERT #51
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.6s] Window  247 🚨 ALERT | IF=0.6009 (thresh=0.6764) ✗ | PCA=376.6652 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #52
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.7s] Window  248 🚨 ALERT | IF=0.5980 (thresh=0.6764) ✗ | PCA=357.4567 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #53
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.8s] Window  249 🚨 ALERT | IF=0.6035 (thresh=0.6764) ✗ | PCA=358.7129 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #54
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  24.9s] Window  250 🚨 ALERT | IF=0.5986 (thresh=0.6764) ✗ | PCA=364.7058 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #55
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.0s] Window  251 🚨 ALERT | IF=0.6014 (thresh=0.6764) ✗ | PCA=364.2490 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #56
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.1s] Window  252 🚨 ALERT | IF=0.6074 (thresh=0.6764) ✗ | PCA=363.7204 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #57
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.2s] Window  253 🚨 ALERT | IF=0.6031 (thresh=0.6764) ✗ | PCA=351.8799 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #58
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.3s] Window  254 🚨 ALERT | IF=0.6049 (thresh=0.6764) ✗ | PCA=357.8416 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #59
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.4s] Window  255 🚨 ALERT | IF=0.6037 (thresh=0.6764) ✗ | PCA=364.7117 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #60
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.6s] Window  256 🚨 ALERT | IF=0.6058 (thresh=0.6764) ✗ | PCA=326.3175 (thresh=20.0000) ✓ | Frames= 126 IDs=18 0x039_rate= 126/s
+  ⚠️  ALERT #61
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.6s] Window  257 🚨 ALERT | IF=0.6082 (thresh=0.6764) ✗ | PCA=301.6491 (thresh=20.0000) ✓ | Frames= 122 IDs=18 0x039_rate= 122/s
+  ⚠️  ALERT #62
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.7s] Window  258 🚨 ALERT | IF=0.6013 (thresh=0.6764) ✗ | PCA=376.1681 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #63
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.8s] Window  259 🚨 ALERT | IF=0.5951 (thresh=0.6764) ✗ | PCA=375.6873 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #64
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  25.9s] Window  260 🚨 ALERT | IF=0.6016 (thresh=0.6764) ✗ | PCA=363.5757 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #65
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.0s] Window  261 🚨 ALERT | IF=0.6019 (thresh=0.6764) ✗ | PCA=357.3502 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #66
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.1s] Window  262 🚨 ALERT | IF=0.6027 (thresh=0.6764) ✗ | PCA=363.4543 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #67
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.2s] Window  263 🚨 ALERT | IF=0.6013 (thresh=0.6764) ✗ | PCA=364.4133 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #68
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.3s] Window  264 🚨 ALERT | IF=0.6039 (thresh=0.6764) ✗ | PCA=363.8670 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #69
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.4s] Window  265 🚨 ALERT | IF=0.6030 (thresh=0.6764) ✗ | PCA=351.7365 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #70
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.5s] Window  266 🚨 ALERT | IF=0.6010 (thresh=0.6764) ✗ | PCA=358.4590 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #71
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.6s] Window  267 🚨 ALERT | IF=0.6007 (thresh=0.6764) ✗ | PCA=357.5396 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #72
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.7s] Window  268 🚨 ALERT | IF=0.5840 (thresh=0.6764) ✗ | PCA=206.3430 (thresh=20.0000) ✓ | Frames= 107 IDs=18 0x039_rate= 107/s
+  ⚠️  ALERT #73
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.8s] Window  269 🚨 ALERT | IF=0.5888 (thresh=0.6764) ✗ | PCA=237.8545 (thresh=20.0000) ✓ | Frames= 112 IDs=18 0x039_rate= 112/s
+  ⚠️  ALERT #74
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  26.9s] Window  270 🚨 ALERT | IF=0.5966 (thresh=0.6764) ✗ | PCA=346.0179 (thresh=20.0000) ✓ | Frames= 129 IDs=18 0x039_rate= 129/s
+  ⚠️  ALERT #75
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.0s] Window  271 🚨 ALERT | IF=0.6110 (thresh=0.6764) ✗ | PCA=383.3716 (thresh=20.0000) ✓ | Frames= 135 IDs=18 0x039_rate= 135/s
+  ⚠️  ALERT #76
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.1s] Window  272 🚨 ALERT | IF=0.5841 (thresh=0.6764) ✗ | PCA=370.5653 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #77
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.2s] Window  273 🚨 ALERT | IF=0.5918 (thresh=0.6764) ✗ | PCA=370.8537 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #78
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.3s] Window  274 🚨 ALERT | IF=0.5949 (thresh=0.6764) ✗ | PCA=357.7616 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #79
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.4s] Window  275 🚨 ALERT | IF=0.5978 (thresh=0.6764) ✗ | PCA=364.0688 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #80
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.5s] Window  276 🚨 ALERT | IF=0.6133 (thresh=0.6764) ✗ | PCA=357.8547 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #81
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.6s] Window  277 🚨 ALERT | IF=0.5992 (thresh=0.6764) ✗ | PCA=365.0096 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #82
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.7s] Window  278 🚨 ALERT | IF=0.5810 (thresh=0.6764) ✗ | PCA=263.6583 (thresh=20.0000) ✓ | Frames= 116 IDs=18 0x039_rate= 116/s
+  ⚠️  ALERT #83
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.8s] Window  279 🚨 ALERT | IF=0.6004 (thresh=0.6764) ✗ | PCA=351.9873 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #84
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  27.9s] Window  280 🚨 ALERT | IF=0.6060 (thresh=0.6764) ✗ | PCA=333.9229 (thresh=20.0000) ✓ | Frames= 127 IDs=18 0x039_rate= 127/s
+  ⚠️  ALERT #85
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.0s] Window  281 🚨 ALERT | IF=0.6006 (thresh=0.6764) ✗ | PCA=375.5391 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #86
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.1s] Window  282 🚨 ALERT | IF=0.6014 (thresh=0.6764) ✗ | PCA=363.7734 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #87
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.2s] Window  283 🚨 ALERT | IF=0.6053 (thresh=0.6764) ✗ | PCA=350.8972 (thresh=20.0000) ✓ | Frames= 130 IDs=18 0x039_rate= 130/s
+  ⚠️  ALERT #88
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.3s] Window  284 🚨 ALERT | IF=0.6044 (thresh=0.6764) ✗ | PCA=376.6968 (thresh=20.0000) ✓ | Frames= 134 IDs=18 0x039_rate= 134/s
+  ⚠️  ALERT #89
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.4s] Window  285 🚨 ALERT | IF=0.5989 (thresh=0.6764) ✗ | PCA=369.9799 (thresh=20.0000) ✓ | Frames= 133 IDs=18 0x039_rate= 133/s
+  ⚠️  ALERT #90
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.5s] Window  286 🚨 ALERT | IF=0.6018 (thresh=0.6764) ✗ | PCA=362.7641 (thresh=20.0000) ✓ | Frames= 132 IDs=18 0x039_rate= 132/s
+  ⚠️  ALERT #91
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.6s] Window  287 🚨 ALERT | IF=0.6007 (thresh=0.6764) ✗ | PCA=357.1720 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #92
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.7s] Window  288 🚨 ALERT | IF=0.5981 (thresh=0.6764) ✗ | PCA=357.9736 (thresh=20.0000) ✓ | Frames= 131 IDs=18 0x039_rate= 131/s
+  ⚠️  ALERT #93
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.8s] Window  289 🚨 ALERT | IF=0.6060 (thresh=0.6764) ✗ | PCA=226.2186 (thresh=20.0000) ✓ | Frames= 110 IDs=18 0x039_rate= 110/s
+  ⚠️  ALERT #94
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  28.9s] Window  290 🚨 ALERT | IF=0.5997 (thresh=0.6764) ✗ | PCA=267.6052 (thresh=20.0000) ✓ | Frames= 118 IDs=19 0x039_rate= 118/s
+  ⚠️  ALERT #95
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.0s] Window  291   OK | IF=0.4854 (thresh=0.6764) ✗ | PCA=6.4677 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.1s] Window  292   OK | IF=0.5088 (thresh=0.6764) ✗ | PCA=6.3246 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.2s] Window  293   OK | IF=0.5067 (thresh=0.6764) ✗ | PCA=6.7803 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.3s] Window  294   OK | IF=0.4850 (thresh=0.6764) ✗ | PCA=6.4382 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.4s] Window  295   OK | IF=0.4946 (thresh=0.6764) ✗ | PCA=6.6476 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.5s] Window  296   OK | IF=0.5003 (thresh=0.6764) ✗ | PCA=6.6409 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.6s] Window  297   OK | IF=0.4984 (thresh=0.6764) ✗ | PCA=6.6099 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.7s] Window  298   OK | IF=0.4925 (thresh=0.6764) ✗ | PCA=6.5584 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.8s] Window  299   OK | IF=0.4893 (thresh=0.6764) ✗ | PCA=6.6706 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  29.9s] Window  300   OK | IF=0.4975 (thresh=0.6764) ✗ | PCA=6.5875 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.0s] Window  301   OK | IF=0.4721 (thresh=0.6764) ✗ | PCA=6.5050 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.1s] Window  302   OK | IF=0.4681 (thresh=0.6764) ✗ | PCA=6.5311 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.2s] Window  303   OK | IF=0.4681 (thresh=0.6764) ✗ | PCA=6.4630 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.3s] Window  304   OK | IF=0.4941 (thresh=0.6764) ✗ | PCA=6.4594 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.4s] Window  305   OK | IF=0.5092 (thresh=0.6764) ✗ | PCA=6.6598 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.5s] Window  306   OK | IF=0.4938 (thresh=0.6764) ✗ | PCA=6.3779 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.6s] Window  307   OK | IF=0.4936 (thresh=0.6764) ✗ | PCA=6.6139 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.8s] Window  308   OK | IF=0.4728 (thresh=0.6764) ✗ | PCA=6.3530 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.8s] Window  309   OK | IF=0.4823 (thresh=0.6764) ✗ | PCA=6.4407 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  30.9s] Window  310   OK | IF=0.4946 (thresh=0.6764) ✗ | PCA=6.5633 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.0s] Window  311   OK | IF=0.5119 (thresh=0.6764) ✗ | PCA=6.5321 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.1s] Window  312   OK | IF=0.4914 (thresh=0.6764) ✗ | PCA=6.5137 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.2s] Window  313   OK | IF=0.5071 (thresh=0.6764) ✗ | PCA=6.7393 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.3s] Window  314   OK | IF=0.5149 (thresh=0.6764) ✗ | PCA=6.4143 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.4s] Window  315   OK | IF=0.4869 (thresh=0.6764) ✗ | PCA=6.3550 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.5s] Window  316   OK | IF=0.5286 (thresh=0.6764) ✗ | PCA=6.7059 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.6s] Window  317   OK | IF=0.4936 (thresh=0.6764) ✗ | PCA=6.5119 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.7s] Window  318   OK | IF=0.4938 (thresh=0.6764) ✗ | PCA=6.4592 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.8s] Window  319   OK | IF=0.4844 (thresh=0.6764) ✗ | PCA=6.2935 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  31.9s] Window  320   OK | IF=0.5043 (thresh=0.6764) ✗ | PCA=6.5539 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.0s] Window  321   OK | IF=0.5003 (thresh=0.6764) ✗ | PCA=6.2773 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.1s] Window  322   OK | IF=0.4865 (thresh=0.6764) ✗ | PCA=6.2973 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.2s] Window  323   OK | IF=0.5239 (thresh=0.6764) ✗ | PCA=6.8884 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.3s] Window  324   OK | IF=0.4976 (thresh=0.6764) ✗ | PCA=6.5512 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.4s] Window  325   OK | IF=0.4917 (thresh=0.6764) ✗ | PCA=6.3787 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.5s] Window  326   OK | IF=0.4985 (thresh=0.6764) ✗ | PCA=6.4181 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.6s] Window  327   OK | IF=0.4778 (thresh=0.6764) ✗ | PCA=6.4255 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.7s] Window  328   OK | IF=0.4684 (thresh=0.6764) ✗ | PCA=6.4371 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.8s] Window  329   OK | IF=0.4733 (thresh=0.6764) ✗ | PCA=6.3194 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  32.9s] Window  330   OK | IF=0.4687 (thresh=0.6764) ✗ | PCA=6.3490 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.0s] Window  331   OK | IF=0.4769 (thresh=0.6764) ✗ | PCA=6.5442 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.1s] Window  332   OK | IF=0.4812 (thresh=0.6764) ✗ | PCA=6.5456 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.2s] Window  333   OK | IF=0.4782 (thresh=0.6764) ✗ | PCA=6.5547 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.3s] Window  334   OK | IF=0.4838 (thresh=0.6764) ✗ | PCA=6.4085 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.4s] Window  335   OK | IF=0.5018 (thresh=0.6764) ✗ | PCA=6.4850 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.5s] Window  336   OK | IF=0.4817 (thresh=0.6764) ✗ | PCA=6.4080 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.6s] Window  337   OK | IF=0.5007 (thresh=0.6764) ✗ | PCA=6.4721 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.7s] Window  338   OK | IF=0.5165 (thresh=0.6764) ✗ | PCA=6.6194 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.8s] Window  339   OK | IF=0.5044 (thresh=0.6764) ✗ | PCA=6.3009 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  33.9s] Window  340   OK | IF=0.5184 (thresh=0.6764) ✗ | PCA=6.5455 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.0s] Window  341   OK | IF=0.5334 (thresh=0.6764) ✗ | PCA=6.6176 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.1s] Window  342   OK | IF=0.5228 (thresh=0.6764) ✗ | PCA=6.5165 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.2s] Window  343   OK | IF=0.4835 (thresh=0.6764) ✗ | PCA=6.5291 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.3s] Window  344   OK | IF=0.5294 (thresh=0.6764) ✗ | PCA=6.7543 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.4s] Window  345   OK | IF=0.4847 (thresh=0.6764) ✗ | PCA=6.5332 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.5s] Window  346   OK | IF=0.5260 (thresh=0.6764) ✗ | PCA=6.6861 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.6s] Window  347   OK | IF=0.5142 (thresh=0.6764) ✗ | PCA=6.5204 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.7s] Window  348   OK | IF=0.4980 (thresh=0.6764) ✗ | PCA=6.6397 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.8s] Window  349   OK | IF=0.4933 (thresh=0.6764) ✗ | PCA=6.2271 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  34.9s] Window  350   OK | IF=0.4968 (thresh=0.6764) ✗ | PCA=6.6197 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.0s] Window  351   OK | IF=0.4917 (thresh=0.6764) ✗ | PCA=6.5851 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.1s] Window  352   OK | IF=0.4919 (thresh=0.6764) ✗ | PCA=6.3273 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.2s] Window  353   OK | IF=0.5238 (thresh=0.6764) ✗ | PCA=6.6499 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.3s] Window  354   OK | IF=0.5055 (thresh=0.6764) ✗ | PCA=6.5058 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.4s] Window  355   OK | IF=0.5218 (thresh=0.6764) ✗ | PCA=6.5590 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.5s] Window  356   OK | IF=0.4861 (thresh=0.6764) ✗ | PCA=6.3578 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.6s] Window  357   OK | IF=0.4838 (thresh=0.6764) ✗ | PCA=6.4873 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.7s] Window  358   OK | IF=0.4972 (thresh=0.6764) ✗ | PCA=6.4658 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.8s] Window  359   OK | IF=0.4977 (thresh=0.6764) ✗ | PCA=6.2458 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  35.9s] Window  360   OK | IF=0.5172 (thresh=0.6764) ✗ | PCA=6.3818 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.0s] Window  361   OK | IF=0.4958 (thresh=0.6764) ✗ | PCA=6.2615 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.1s] Window  362   OK | IF=0.4899 (thresh=0.6764) ✗ | PCA=6.3374 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.2s] Window  363   OK | IF=0.5211 (thresh=0.6764) ✗ | PCA=6.3160 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.3s] Window  364   OK | IF=0.5164 (thresh=0.6764) ✗ | PCA=6.3969 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.4s] Window  365   OK | IF=0.4849 (thresh=0.6764) ✗ | PCA=6.3954 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.5s] Window  366   OK | IF=0.4937 (thresh=0.6764) ✗ | PCA=6.4824 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.6s] Window  367   OK | IF=0.5025 (thresh=0.6764) ✗ | PCA=6.2319 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.7s] Window  368   OK | IF=0.5063 (thresh=0.6764) ✗ | PCA=6.5350 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.8s] Window  369   OK | IF=0.5572 (thresh=0.6764) ✗ | PCA=6.4527 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  36.9s] Window  370   OK | IF=0.5249 (thresh=0.6764) ✗ | PCA=6.7798 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.0s] Window  371   OK | IF=0.5194 (thresh=0.6764) ✗ | PCA=6.5451 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.1s] Window  372   OK | IF=0.5040 (thresh=0.6764) ✗ | PCA=6.5017 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.2s] Window  373   OK | IF=0.4897 (thresh=0.6764) ✗ | PCA=6.2358 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.3s] Window  374   OK | IF=0.5266 (thresh=0.6764) ✗ | PCA=6.4649 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.4s] Window  375   OK | IF=0.5148 (thresh=0.6764) ✗ | PCA=6.4463 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.5s] Window  376   OK | IF=0.5177 (thresh=0.6764) ✗ | PCA=6.5648 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.6s] Window  377   OK | IF=0.5057 (thresh=0.6764) ✗ | PCA=6.3793 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.7s] Window  378   OK | IF=0.4843 (thresh=0.6764) ✗ | PCA=6.3440 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.8s] Window  379   OK | IF=0.5000 (thresh=0.6764) ✗ | PCA=6.4482 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  37.9s] Window  380   OK | IF=0.5134 (thresh=0.6764) ✗ | PCA=6.4570 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.0s] Window  381   OK | IF=0.5060 (thresh=0.6764) ✗ | PCA=6.4365 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.1s] Window  382   OK | IF=0.4871 (thresh=0.6764) ✗ | PCA=6.4673 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.2s] Window  383   OK | IF=0.4824 (thresh=0.6764) ✗ | PCA=6.4163 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.3s] Window  384   OK | IF=0.4964 (thresh=0.6764) ✗ | PCA=6.5717 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.4s] Window  385   OK | IF=0.4763 (thresh=0.6764) ✗ | PCA=6.3649 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.5s] Window  386   OK | IF=0.4973 (thresh=0.6764) ✗ | PCA=6.6685 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.6s] Window  387   OK | IF=0.4733 (thresh=0.6764) ✗ | PCA=6.2251 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.7s] Window  388   OK | IF=0.5036 (thresh=0.6764) ✗ | PCA=6.4870 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.8s] Window  389   OK | IF=0.4936 (thresh=0.6764) ✗ | PCA=6.3551 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  38.9s] Window  390   OK | IF=0.5083 (thresh=0.6764) ✗ | PCA=6.6625 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.0s] Window  391   OK | IF=0.4867 (thresh=0.6764) ✗ | PCA=6.1978 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.1s] Window  392   OK | IF=0.4799 (thresh=0.6764) ✗ | PCA=6.3623 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.2s] Window  393   OK | IF=0.4824 (thresh=0.6764) ✗ | PCA=6.5353 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.3s] Window  394   OK | IF=0.5087 (thresh=0.6764) ✗ | PCA=6.4410 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.4s] Window  395   OK | IF=0.4934 (thresh=0.6764) ✗ | PCA=6.4935 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.5s] Window  396   OK | IF=0.5342 (thresh=0.6764) ✗ | PCA=6.4453 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.6s] Window  397   OK | IF=0.5067 (thresh=0.6764) ✗ | PCA=6.4087 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.7s] Window  398   OK | IF=0.5385 (thresh=0.6764) ✗ | PCA=6.4936 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.8s] Window  399   OK | IF=0.5096 (thresh=0.6764) ✗ | PCA=6.1292 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  39.9s] Window  400   OK | IF=0.5291 (thresh=0.6764) ✗ | PCA=6.3932 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.0s] Window  401   OK | IF=0.4945 (thresh=0.6764) ✗ | PCA=6.2827 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.1s] Window  402   OK | IF=0.5232 (thresh=0.6764) ✗ | PCA=6.3291 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.2s] Window  403   OK | IF=0.4886 (thresh=0.6764) ✗ | PCA=6.2800 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.3s] Window  404   OK | IF=0.5194 (thresh=0.6764) ✗ | PCA=6.3641 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.4s] Window  405   OK | IF=0.5014 (thresh=0.6764) ✗ | PCA=6.6117 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.5s] Window  406   OK | IF=0.4774 (thresh=0.6764) ✗ | PCA=6.3437 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.6s] Window  407   OK | IF=0.4765 (thresh=0.6764) ✗ | PCA=6.4087 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.7s] Window  408   OK | IF=0.4840 (thresh=0.6764) ✗ | PCA=6.3638 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+[  40.8s] Window  409   OK | IF=0.4739 (thresh=0.6764) ✗ | PCA=6.2782 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
+(Stopping after 100 windows - use Ctrl+C to stop earlier)
+2025-11-16 10:45:20,053 INFO Received signal 2; shutting down gracefully...
+
+================================================================================
+Summary: 409 windows processed in 40.9s, 95 alerts
+Alert rate: 8366.2 alerts/hour
+================================================================================
+2025-11-16 10:45:20,055 WARNING SocketcanBus was not properly shut down
