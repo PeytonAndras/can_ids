@@ -21,8 +21,11 @@ class RateDetectorConfig:
     # Track rates over this many seconds
     history_window_seconds: float = 30.0
     
+    # Short-term window for faster adaptation (used for recent baseline)
+    short_term_window_seconds: float = 10.0
+    
     # Minimum samples needed before alerting
-    min_samples: int = 10
+    min_samples: int = 5
     
     # Alert if rate deviates by this many standard deviations
     rate_deviation_threshold: float = 3.0
@@ -65,7 +68,7 @@ class IDRateStats:
         cutoff = current_time - window_seconds
         return [ts for ts in self.timestamps if ts >= cutoff]
     
-    def compute_rate_stats(self, window_seconds: float, current_time: float) -> Tuple[float, float, float]:
+    def compute_rate_stats(self, window_seconds: float, current_time: float, short_term_window: float = None) -> Tuple[float, float, float]:
         """Compute mean, std, and current rate"""
         recent = self.get_recent_timestamps(window_seconds, current_time)
         if len(recent) < 2:
@@ -81,10 +84,17 @@ class IDRateStats:
         else:
             current_rate = 0.0
         
-        # Use historical rates if available
+        # Use weighted average: recent rates weighted more heavily for faster adaptation
         if len(self.rates) >= 2:
-            mean_rate = float(np.mean(self.rates))
-            std_rate = float(np.std(self.rates)) if len(self.rates) > 1 else 0.0
+            # Use exponential weighting: more recent rates have higher weight
+            weights = np.exp(np.linspace(-2, 0, len(self.rates)))  # Recent = higher weight
+            weights = weights / weights.sum()
+            
+            mean_rate = float(np.average(self.rates, weights=weights))
+            
+            # For std, use recent rates (last 50% of history) for faster adaptation
+            recent_rates = self.rates[-max(5, len(self.rates) // 2):]
+            std_rate = float(np.std(recent_rates)) if len(recent_rates) > 1 else mean_rate * 0.1
         else:
             # Fallback to current window estimate
             mean_rate = current_rate
@@ -143,8 +153,11 @@ class RateDetector:
         
         # Check each monitored ID
         for can_id, stats in self.id_stats.items():
+            # Use shorter window for faster adaptation
+            short_term = self.config.short_term_window_seconds if hasattr(self.config, 'short_term_window_seconds') else self.config.history_window_seconds / 3
+            
             mean_rate, std_rate, current_rate = stats.compute_rate_stats(
-                self.config.history_window_seconds, current_time
+                self.config.history_window_seconds, current_time, short_term
             )
             
             # Skip if not enough data (need at least some history)
@@ -182,34 +195,39 @@ class RateDetector:
                     max_score = max(max_score, 0.7)
             
             # Check timing regularity (detect injection patterns)
-            # Only alert if CV is significantly lower than baseline AND we have enough history
-            cv = stats.compute_timing_regularity(self.config.history_window_seconds, current_time)
+            # Use shorter window for faster adaptation
+            short_term = self.config.short_term_window_seconds if hasattr(self.config, 'short_term_window_seconds') else self.config.history_window_seconds / 3
+            cv = stats.compute_timing_regularity(short_term, current_time)
             
-            # Build baseline CV if we have enough historical data
-            if len(stats.timestamps) >= 20:  # Need more samples for baseline
-                # Use recent windows to compute baseline CV
+            # Build baseline CV using recent history (faster adaptation)
+            if len(stats.timestamps) >= 10:  # Reduced from 20 for faster detection
+                # Use shorter windows for baseline (more recent data)
                 recent_cvs = []
-                for i in range(min(10, len(stats.timestamps) - 5)):
-                    window_start = current_time - (i + 1) * self.config.history_window_seconds / 10
+                num_windows = min(5, len(stats.timestamps) // 3)  # Fewer windows, faster
+                for i in range(num_windows):
+                    window_start = current_time - (i + 1) * short_term / num_windows
                     window_cv = stats.compute_timing_regularity(
-                        self.config.history_window_seconds / 10, window_start
+                        short_term / num_windows, window_start
                     )
                     if window_cv < 1.0:  # Valid CV
                         recent_cvs.append(window_cv)
                 
-                if len(recent_cvs) >= 5:
-                    baseline_cv = float(np.mean(recent_cvs))
-                    cv_std = float(np.std(recent_cvs)) if len(recent_cvs) > 1 else baseline_cv * 0.1
+                if len(recent_cvs) >= 3:  # Reduced from 5
+                    # Weight recent CVs more heavily
+                    weights = np.exp(np.linspace(-1, 0, len(recent_cvs)))
+                    weights = weights / weights.sum()
+                    baseline_cv = float(np.average(recent_cvs, weights=weights))
+                    cv_std = float(np.std(recent_cvs[-3:])) if len(recent_cvs) >= 3 else baseline_cv * 0.1
                     
                     # Only alert if current CV is significantly lower than baseline
                     # AND below absolute threshold (to catch truly suspicious patterns)
-                    if cv < self.config.regularity_threshold and cv < baseline_cv - 2 * cv_std:
+                    if cv < self.config.regularity_threshold and cv < baseline_cv - 1.5 * cv_std:  # Reduced from 2*std for faster detection
                         alerts.append(
                             f"ID 0x{can_id:03X}: suspiciously regular timing "
                             f"(CV={cv:.3f} < baseline={baseline_cv:.3f}±{cv_std:.3f}, threshold={self.config.regularity_threshold})"
                         )
                         max_score = max(max_score, 0.9)
-            elif cv < self.config.regularity_threshold and len(stats.timestamps) >= 10:
+            elif cv < self.config.regularity_threshold and len(stats.timestamps) >= 5:  # Reduced from 10
                 # Fallback: alert if CV is extremely low (near zero) even without baseline
                 if cv < 0.005:  # Very strict - only near-perfect regularity
                     alerts.append(
@@ -218,18 +236,27 @@ class RateDetector:
                     )
                     max_score = max(max_score, 0.7)
             
-            if cv > self.config.irregularity_threshold and len(stats.timestamps) >= 5:
+            # Use shorter window for irregularity check too
+            cv_long = stats.compute_timing_regularity(self.config.history_window_seconds, current_time)
+            if cv_long > self.config.irregularity_threshold and len(stats.timestamps) >= 5:
                 alerts.append(
                     f"ID 0x{can_id:03X}: highly irregular timing "
-                    f"(CV={cv:.3f} > {self.config.irregularity_threshold} threshold)"
+                    f"(CV={cv_long:.3f} > {self.config.irregularity_threshold} threshold)"
                 )
                 max_score = max(max_score, 0.6)
         
-        # Update window rates
+        # Update window rates (limit history size for faster adaptation)
         if window_duration > 0:
             for can_id, count in self.window_message_counts.items():
                 window_rate = count / window_duration
-                self.id_stats[can_id].update_rate(window_rate)
+                stats = self.id_stats[can_id]
+                stats.update_rate(window_rate)
+                
+                # Limit rate history to recent windows only (faster adaptation)
+                max_rate_history = int(self.config.history_window_seconds / window_duration) + 10
+                if len(stats.rates) > max_rate_history:
+                    # Keep only most recent rates
+                    stats.rates = deque(list(stats.rates)[-max_rate_history:], maxlen=stats.rates.maxlen)
         
         # Reset window counters
         self.window_message_counts.clear()
