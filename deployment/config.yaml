@@ -12,3 +12,25 @@ logging:
   level: INFO
 telemetry:
   http_port: 8080
+
+# Rate-based detection configuration
+rate_detection:
+  enabled: true
+  # Track rates over this many seconds
+  history_window_seconds: 30.0
+  # Minimum samples needed before alerting
+  min_samples: 10
+  # Alert if rate deviates by this many standard deviations
+  rate_deviation_threshold: 3.0
+  # Alert if rate is above this multiplier of mean
+  rate_multiplier_threshold: 2.0
+  # Alert if rate is below this fraction of mean (for low-volume attacks)
+  rate_minimum_threshold: 0.1
+  # Alert if timing regularity is too high (CV < threshold means very regular)
+  regularity_threshold: 0.1
+  # Alert if timing is too irregular (CV > threshold)
+  irregularity_threshold: 2.0
+  # Monitor specific IDs (empty = monitor all). Use hex strings like "0x039" or integers
+  monitored_ids: []
+  # Ignore these IDs
+  ignored_ids: []

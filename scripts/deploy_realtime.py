@@ -38,6 +38,12 @@ try:
 except ImportError:  # pragma: no cover - optional dependency
     can = None
 
+try:
+    from scripts.rate_detector import RateDetector, RateDetectorConfig
+except ImportError:
+    RateDetector = None
+    RateDetectorConfig = None
+
 MAX_PAYLOAD_BYTES = 8
 IGNORED_COLUMNS = {"file", "label", "win"}
 TIME_LIKE_FEATURES = {"start_time", "end_time", "win"}
@@ -58,6 +64,7 @@ class DeploymentConfig:
     logging_level: str = "INFO"
     telemetry_port: Optional[int] = None
     replay_csv: Optional[Path] = None
+    rate_detection: Optional[Dict[str, Any]] = None
 
     @classmethod
     def from_mapping(cls, mapping: Dict[str, Any], config_dir: Path) -> "DeploymentConfig":
@@ -78,6 +85,7 @@ class DeploymentConfig:
 
         thresholds = resolve_path(mapping.get("thresholds"))
         logging_cfg = mapping.get("logging", {}) or {}
+        rate_detection_cfg = mapping.get("rate_detection")
 
         return cls(
             window_ms=float(mapping.get("window_ms", DEFAULT_WINDOW_MS)),
@@ -91,6 +99,7 @@ class DeploymentConfig:
             logging_level=str(logging_cfg.get("level", "INFO")).upper(),
             telemetry_port=mapping.get("telemetry", {}).get("http_port"),
             replay_csv=resolve_path(mapping.get("replay_csv")),
+            rate_detection=rate_detection_cfg,
         )
 
 
@@ -669,6 +678,26 @@ def run_pipeline(config: DeploymentConfig, live_channel: Optional[str], bustype:
     metrics = MetricsTracker()
     alert_sink = AlertSink(config.logging_path)
     aggregator = WindowAggregator(config.window_ms)
+    
+    # Initialize rate detector if configured
+    rate_detector = None
+    if RateDetector is not None and config.rate_detection and config.rate_detection.get("enabled", False):
+        rate_config_dict = config.rate_detection
+        rate_config = RateDetectorConfig(
+            history_window_seconds=float(rate_config_dict.get("history_window_seconds", 30.0)),
+            min_samples=int(rate_config_dict.get("min_samples", 10)),
+            rate_deviation_threshold=float(rate_config_dict.get("rate_deviation_threshold", 3.0)),
+            rate_multiplier_threshold=float(rate_config_dict.get("rate_multiplier_threshold", 2.0)),
+            rate_minimum_threshold=float(rate_config_dict.get("rate_minimum_threshold", 0.1)),
+            regularity_threshold=float(rate_config_dict.get("regularity_threshold", 0.1)),
+            irregularity_threshold=float(rate_config_dict.get("irregularity_threshold", 2.0)),
+            monitored_ids=[int(x, 16) if isinstance(x, str) else int(x) 
+                          for x in rate_config_dict.get("monitored_ids", [])],
+            ignored_ids=[int(x, 16) if isinstance(x, str) else int(x) 
+                        for x in rate_config_dict.get("ignored_ids", [])],
+        )
+        rate_detector = RateDetector(rate_config)
+        logging.info("Rate-based detection enabled")
 
     def frame_iter() -> Iterable[Frame]:
         if replay_path is not None:
@@ -697,21 +726,80 @@ def run_pipeline(config: DeploymentConfig, live_channel: Optional[str], bustype:
         for frame in frame_iterator:
             if stop_requested:
                 break
+            
+            # Feed frame to rate detector if enabled
+            if rate_detector is not None:
+                rate_detector.add_frame(frame.arbitration_id, frame.timestamp)
+            
             for features in aggregator.add_frame(frame):
                 scores = ensemble.score(features)
                 is_anomaly = ensemble.is_anomaly(scores)
-                should_alert = metrics.register_window(is_anomaly, config.consecutive_windows)
+                
+                # Check rate-based anomalies
+                rate_anomaly = False
+                rate_info = {}
+                if rate_detector is not None:
+                    window_duration = config.window_ms / 1000.0
+                    current_time = float(features.get("end_time", time.time()))
+                    rate_result = rate_detector.check_anomalies(current_time, window_duration)
+                    rate_anomaly = rate_result.get("is_anomaly", False)
+                    rate_info = rate_result
+                    
+                    # Add rate score to scores dict
+                    if rate_anomaly:
+                        scores["rate_detector"] = rate_result.get("score", 0.5)
+                    else:
+                        scores["rate_detector"] = rate_result.get("score", 0.0)
+                    
+                    # Reset rate detector window
+                    rate_detector.reset_window(current_time)
+                
+                # Combine anomalies (logical OR by default for rate detection)
+                combined_anomaly = is_anomaly or rate_anomaly
+                
+                should_alert = metrics.register_window(combined_anomaly, config.consecutive_windows)
                 if should_alert:
                     payload = build_alert_payload(features, scores, ensemble.thresholds, metrics, ensemble.scaler, ensemble.feature_names)
+                    # Add rate detection info to payload
+                    if rate_info:
+                        payload["rate_detection"] = {
+                            "is_anomaly": rate_anomaly,
+                            "score": rate_info.get("score", 0.0),
+                            "alerts": rate_info.get("alerts", []),
+                            "details": rate_info.get("details", {})
+                        }
                     alert_sink.emit(payload)
         # Flush remainder window on shutdown
         final_features = aggregator.flush()
         if final_features is not None:
             scores = ensemble.score(final_features)
             is_anomaly = ensemble.is_anomaly(scores)
-            should_alert = metrics.register_window(is_anomaly, config.consecutive_windows)
+            
+            # Check rate-based anomalies for final window
+            rate_anomaly = False
+            rate_info = {}
+            if rate_detector is not None:
+                window_duration = config.window_ms / 1000.0
+                current_time = float(final_features.get("end_time", time.time()))
+                rate_result = rate_detector.check_anomalies(current_time, window_duration)
+                rate_anomaly = rate_result.get("is_anomaly", False)
+                rate_info = rate_result
+                if rate_anomaly:
+                    scores["rate_detector"] = rate_result.get("score", 0.5)
+                else:
+                    scores["rate_detector"] = rate_result.get("score", 0.0)
+            
+            combined_anomaly = is_anomaly or rate_anomaly
+            should_alert = metrics.register_window(combined_anomaly, config.consecutive_windows)
             if should_alert:
                 payload = build_alert_payload(final_features, scores, ensemble.thresholds, metrics, ensemble.scaler, ensemble.feature_names)
+                if rate_info:
+                    payload["rate_detection"] = {
+                        "is_anomaly": rate_anomaly,
+                        "score": rate_info.get("score", 0.0),
+                        "alerts": rate_info.get("alerts", []),
+                        "details": rate_info.get("details", {})
+                    }
                 alert_sink.emit(payload)
     finally:
         alert_sink.close()
