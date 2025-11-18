@@ -3,8 +3,9 @@ window_ms: 100
 smoothing:
   consecutive_windows: 1  # No smoothing - immediate detection
 models:
-  isolation_forest: ../models/unsupervised/new/isolation_forest.joblib
-thresholds: ../results/unsupervised/new/thresholds.json
+  isolation_forest: ../models/unsupervised/real_can0/isolation_forest.joblib
+  pca: ../models/unsupervised/real_can0/pca_reconstruction.joblib
+thresholds: ../results/unsupervised/real_can0/thresholds.json
 ensemble: isolation_forest
 logging:
   path: logs/alerts.jsonl
