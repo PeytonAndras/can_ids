@@ -40,9 +40,12 @@ except ImportError:  # pragma: no cover - optional dependency
 
 try:
     from scripts.rate_detector import RateDetector, RateDetectorConfig
-except ImportError:
+    RATE_DETECTOR_AVAILABLE = True
+except ImportError as e:
     RateDetector = None
     RateDetectorConfig = None
+    RATE_DETECTOR_AVAILABLE = False
+    _rate_detector_import_error = e
 
 MAX_PAYLOAD_BYTES = 8
 IGNORED_COLUMNS = {"file", "label", "win"}
@@ -681,23 +684,26 @@ def run_pipeline(config: DeploymentConfig, live_channel: Optional[str], bustype:
     
     # Initialize rate detector if configured
     rate_detector = None
-    if RateDetector is not None and config.rate_detection and config.rate_detection.get("enabled", False):
-        rate_config_dict = config.rate_detection
-        rate_config = RateDetectorConfig(
-            history_window_seconds=float(rate_config_dict.get("history_window_seconds", 30.0)),
-            min_samples=int(rate_config_dict.get("min_samples", 10)),
-            rate_deviation_threshold=float(rate_config_dict.get("rate_deviation_threshold", 3.0)),
-            rate_multiplier_threshold=float(rate_config_dict.get("rate_multiplier_threshold", 2.0)),
-            rate_minimum_threshold=float(rate_config_dict.get("rate_minimum_threshold", 0.1)),
-            regularity_threshold=float(rate_config_dict.get("regularity_threshold", 0.1)),
-            irregularity_threshold=float(rate_config_dict.get("irregularity_threshold", 2.0)),
-            monitored_ids=[int(x, 16) if isinstance(x, str) else int(x) 
-                          for x in rate_config_dict.get("monitored_ids", [])],
-            ignored_ids=[int(x, 16) if isinstance(x, str) else int(x) 
-                        for x in rate_config_dict.get("ignored_ids", [])],
-        )
-        rate_detector = RateDetector(rate_config)
-        logging.info("Rate-based detection enabled")
+    if config.rate_detection and config.rate_detection.get("enabled", False):
+        if not RATE_DETECTOR_AVAILABLE:
+            logging.warning("Rate detection enabled in config but module not available: %s", _rate_detector_import_error)
+        elif RateDetector is not None:
+            rate_config_dict = config.rate_detection
+            rate_config = RateDetectorConfig(
+                history_window_seconds=float(rate_config_dict.get("history_window_seconds", 30.0)),
+                min_samples=int(rate_config_dict.get("min_samples", 10)),
+                rate_deviation_threshold=float(rate_config_dict.get("rate_deviation_threshold", 3.0)),
+                rate_multiplier_threshold=float(rate_config_dict.get("rate_multiplier_threshold", 2.0)),
+                rate_minimum_threshold=float(rate_config_dict.get("rate_minimum_threshold", 0.1)),
+                regularity_threshold=float(rate_config_dict.get("regularity_threshold", 0.1)),
+                irregularity_threshold=float(rate_config_dict.get("irregularity_threshold", 2.0)),
+                monitored_ids=[int(x, 16) if isinstance(x, str) else int(x) 
+                              for x in rate_config_dict.get("monitored_ids", [])],
+                ignored_ids=[int(x, 16) if isinstance(x, str) else int(x) 
+                            for x in rate_config_dict.get("ignored_ids", [])],
+            )
+            rate_detector = RateDetector(rate_config)
+            logging.info("Rate-based detection enabled")
 
     def frame_iter() -> Iterable[Frame]:
         if replay_path is not None:

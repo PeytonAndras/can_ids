@@ -1,104 +1,201 @@
-# Live Deployment Testing Guide
+# Live Deployment Guide
 
 ## Quick Start
 
-### 1. **Live Monitoring (Normal Traffic)**
-Run the detector on the live `can0` interface:
+### 1. Start the IDS
 
 ```bash
-cd /Users/peytonandras/Projects/Research/can_ids
-python scripts/deploy_realtime.py --config deployment/config.yaml --can-channel can0
+python3 scripts/deploy_realtime.py --can-channel can0
 ```
 
-**What to expect:**
-- The detector will start listening on `can0`
-- Alerts will be logged to both stdout and `deployment/logs/alerts.jsonl`
-- With current thresholds (99.5th percentile), you should see very few false positives (~2 per hour based on simulation)
-
-**To stop:** Press `Ctrl+C`
-
-### 2. **Monitor Alert Logs in Real-Time**
-In a separate terminal, watch the alert log:
-
-```bash
-tail -f deployment/logs/alerts.jsonl | jq .
+**Expected output:**
+```
+2025-11-16 10:00:00 INFO Listening on CAN interface can0 (socketcan)
+2025-11-16 10:00:00 INFO Rate-based detection enabled
 ```
 
-Or without `jq`:
+If you don't see "Rate-based detection enabled", check:
+- `deployment/config.yaml` has `rate_detection.enabled: true`
+- `scripts/rate_detector.py` exists and is importable
+
+### 2. Verify Rate Detection is Active
+
+Use the debug script to see rate detection in action:
+
 ```bash
-tail -f deployment/logs/alerts.jsonl
+python3 scripts/deploy_realtime_debug.py
 ```
 
-### 3. **Testing with Attack Traffic**
+Look for:
+- `Rate detection: ENABLED` in the header
+- Rate scores in each window output
+- Rate alerts when anomalies detected
 
-**Option A: Capture Attack Data First, Then Replay**
-1. Start capturing normal traffic:
-   ```bash
-   candump -L can0 > data/raw/can0/attack_test.log
-   ```
-2. In another terminal, run your attack script
-3. Stop capturing after a few seconds (`Ctrl+C`)
-4. Convert to CSV and test:
-   ```bash
-   # Convert log to CSV (if needed)
-   python scripts/feature_extractor_can_ids.py data/raw/can0/attack_test.log data/raw/can0/attack_test.csv
-   
-   # Replay through detector
-   python scripts/deploy_realtime.py --config deployment/config.yaml --replay data/raw/can0/attack_test.csv
-   ```
+### 3. Run Your Attack
 
-**Option B: Live Detection During Attack**
-1. Start the detector in one terminal:
-   ```bash
-   python scripts/deploy_realtime.py --config deployment/config.yaml --can-channel can0
-   ```
-2. In another terminal, run your attack script
-3. Watch for alerts in real-time
+In another terminal:
 
-## Current Configuration
-
-- **Models:** Isolation Forest (trained on real `can0` data)
-- **Threshold:** 99.5th percentile (0.6764)
-- **Window Size:** 100ms
-- **Smoothing:** 1 consecutive window (immediate detection)
-- **Expected Performance:**
-  - False Positives: ~2 per hour on normal traffic
-  - Detection: Should detect accelerator flood attacks immediately
-
-## Monitoring Commands
-
-**Check recent alerts:**
 ```bash
-tail -20 deployment/logs/alerts.jsonl | jq .
+# Your cycling attack script
+./your_attack_script.sh
 ```
 
-**Count total alerts:**
+Or manually inject:
+
 ```bash
-wc -l deployment/logs/alerts.jsonl
+for i in {1..30}; do
+  cansend can0 062#07B63A0BF6623BCF && sleep 0.1
+  cansend can0 024#006C3A0D9C4F913B && sleep 0.1
+  cansend can0 039#00003A0DD87D5C7A && sleep 0.1
+done
 ```
 
-**View alert details:**
-```bash
-cat deployment/logs/alerts.jsonl | jq '.scores, .thresholds, .metrics'
+## What You Should See
+
+### Normal Traffic (No Alerts)
+
+```
+[   2.0s] Window   20   OK | IF=0.50 (thresh=0.68) ✗ | PCA=6.5 (thresh=20.0) ✗ | Rate=0.00 ✗ | Frames=  80 IDs=17
+```
+
+### Attack Detected
+
+```
+[  30.5s] Window  305 🚨 ALERT | IF=0.55 (thresh=0.68) ✗ | PCA=7.2 (thresh=20.0) ✗ | Rate=0.85 ✓ | Frames=  82 IDs=17
+  📊 ID 0x039: suspiciously regular timing (CV=0.05 < 0.1 threshold)
+  📊 ID 0x062: suspiciously low rate (2.0 msg/s < 8.0 threshold)
+  ⚠️  ALERT #1
 ```
 
 ## Troubleshooting
 
-**If you see too many false positives:**
-- Increase the threshold percentile (retrain with `--percentile=99.9`)
-- Increase smoothing windows in config: `consecutive_windows: 2`
+### Rate Detection Not Enabled
 
-**If attacks aren't detected:**
-- Verify attack is actually sending `0x039` frames
-- Check that attack traffic is on `can0` (not `vcan0`)
-- Lower threshold percentile (retrain with `--percentile=99.0`)
+**Symptom**: No "Rate-based detection enabled" message
 
-**If no frames are received:**
-```bash
-# Check CAN interface status
-ip link show can0
+**Fix**:
+1. Check config: `grep "enabled: true" deployment/config.yaml | grep -A 1 rate_detection`
+2. Verify module: `python3 -c "from scripts.rate_detector import RateDetector; print('OK')"`
+3. Restart IDS
 
-# Check if interface is up
-candump can0 -n 10
+### No Alerts During Attack
+
+**Possible causes**:
+
+1. **Not enough baseline data**
+   - Wait 30+ seconds before starting attack
+   - Rate detector needs time to learn normal patterns
+
+2. **Thresholds too strict**
+   ```yaml
+   rate_detection:
+     regularity_threshold: 0.15    # Less strict
+     rate_minimum_threshold: 0.15  # Less strict
+     min_samples: 5                # Faster detection
+   ```
+
+3. **Attack too subtle**
+   - Your cycling attack (10 msg/s) might be drowned out by normal traffic (80+ msg/s)
+   - Try monitoring specific IDs:
+   ```yaml
+   monitored_ids: ["0x062", "0x024", "0x039"]
+   ```
+
+### Too Many False Positives
+
+**Fix**:
+```yaml
+rate_detection:
+  regularity_threshold: 0.05      # More strict
+  rate_deviation_threshold: 4.0  # More strict
+  min_samples: 20                # Require more data
 ```
 
+## Monitoring in Production
+
+### View Alerts Live
+
+```bash
+# Terminal 1: Run IDS
+python3 scripts/deploy_realtime.py --can-channel can0 2>&1 | tee deployment.log
+
+# Terminal 2: Watch for rate alerts
+tail -f deployment.log | grep -i "rate\|alert"
+```
+
+### Check Alert Logs
+
+```bash
+# View all alerts
+cat logs/alerts.jsonl | jq 'select(.rate_detection.is_anomaly == true)'
+
+# Count rate detection alerts
+cat logs/alerts.jsonl | jq 'select(.rate_detection.is_anomaly == true)' | wc -l
+```
+
+### Debug Mode
+
+For detailed debugging:
+
+```bash
+python3 scripts/deploy_realtime_debug.py
+```
+
+Shows:
+- All window scores (not just alerts)
+- Rate detection scores
+- Rate alerts
+- Detailed frame statistics
+
+## Configuration Reference
+
+Full rate detection config options:
+
+```yaml
+rate_detection:
+  enabled: true                    # Enable/disable rate detection
+  history_window_seconds: 30.0     # How long to track rates
+  min_samples: 10                  # Minimum samples before alerting
+  rate_deviation_threshold: 3.0    # Alert if rate deviates by N std devs
+  rate_multiplier_threshold: 2.0   # Alert if rate > N× mean
+  rate_minimum_threshold: 0.1      # Alert if rate < N× mean (low-volume attacks)
+  regularity_threshold: 0.1        # Alert if CV < N (regular timing)
+  irregularity_threshold: 2.0      # Alert if CV > N (irregular timing)
+  monitored_ids: []                # Empty = monitor all IDs
+  ignored_ids: []                  # IDs to ignore
+```
+
+## Expected Behavior
+
+### Timeline
+
+- **0-10s**: IDS starts, rate detector initializes
+- **10-30s**: Baseline building (normal traffic patterns learned)
+- **30s+**: Attack starts
+- **30-35s**: Rate detection alerts should appear
+
+### Alert Types
+
+1. **Regular Timing Alert**: `"suspiciously regular timing (CV=0.05 < 0.1 threshold)"`
+   - Detects your 0.1s intervals
+
+2. **Low Rate Alert**: `"suspiciously low rate (2.0 msg/s < 8.0 threshold)"`
+   - Detects when rate drops significantly
+
+3. **High Rate Alert**: `"high rate (160.0 msg/s > 160.0 threshold)"`
+   - Detects flood attacks
+
+4. **Rate Deviation Alert**: `"rate anomaly (current=150.0, mean=80.0±10.0, z=7.0)"`
+   - Detects statistical anomalies
+
+## Integration with Existing System
+
+Rate detection works seamlessly:
+
+- ✅ Uses same config file
+- ✅ Works with PCA/IF models
+- ✅ Outputs to same alert log
+- ✅ No changes to existing models needed
+- ✅ Logical OR ensemble (any detector can trigger alert)
+
+Just enable it and restart!
