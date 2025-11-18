@@ -86,14 +86,18 @@ class IDRateStats:
         
         # Use weighted average: recent rates weighted more heavily for faster adaptation
         if len(self.rates) >= 2:
+            # Convert deque to list for slicing
+            rates_list = list(self.rates)
+            
             # Use exponential weighting: more recent rates have higher weight
-            weights = np.exp(np.linspace(-2, 0, len(self.rates)))  # Recent = higher weight
+            weights = np.exp(np.linspace(-2, 0, len(rates_list)))  # Recent = higher weight
             weights = weights / weights.sum()
             
-            mean_rate = float(np.average(self.rates, weights=weights))
+            mean_rate = float(np.average(rates_list, weights=weights))
             
             # For std, use recent rates (last 50% of history) for faster adaptation
-            recent_rates = self.rates[-max(5, len(self.rates) // 2):]
+            num_recent = max(5, len(rates_list) // 2)
+            recent_rates = rates_list[-num_recent:]
             std_rate = float(np.std(recent_rates)) if len(recent_rates) > 1 else mean_rate * 0.1
         else:
             # Fallback to current window estimate
