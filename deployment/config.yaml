@@ -16,12 +16,10 @@ telemetry:
 # Rate-based detection configuration
 rate_detection:
   enabled: true
-  # Track rates over this many seconds (long-term baseline)
+  # Track rates over this many seconds
   history_window_seconds: 30.0
-  # Short-term window for faster adaptation (detection and normalization)
-  short_term_window_seconds: 10.0
-  # Minimum samples needed before alerting (reduced for faster detection)
-  min_samples: 5
+  # Minimum samples needed before alerting
+  min_samples: 10
   # Alert if rate deviates by this many standard deviations
   rate_deviation_threshold: 3.0
   # Alert if rate is above this multiplier of mean

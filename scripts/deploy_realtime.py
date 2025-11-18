@@ -691,8 +691,7 @@ def run_pipeline(config: DeploymentConfig, live_channel: Optional[str], bustype:
             rate_config_dict = config.rate_detection
             rate_config = RateDetectorConfig(
                 history_window_seconds=float(rate_config_dict.get("history_window_seconds", 30.0)),
-                short_term_window_seconds=float(rate_config_dict.get("short_term_window_seconds", 10.0)),
-                min_samples=int(rate_config_dict.get("min_samples", 5)),
+                min_samples=int(rate_config_dict.get("min_samples", 10)),
                 rate_deviation_threshold=float(rate_config_dict.get("rate_deviation_threshold", 3.0)),
                 rate_multiplier_threshold=float(rate_config_dict.get("rate_multiplier_threshold", 2.0)),
                 rate_minimum_threshold=float(rate_config_dict.get("rate_minimum_threshold", 0.1)),
