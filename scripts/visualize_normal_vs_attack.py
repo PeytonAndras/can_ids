@@ -85,27 +85,43 @@ def create_scientific_plot(data: Dict, thresholds: Dict, output_path: Path):
     attack_pca = [w['pca_score'] for w in attack_windows_sorted]
     attack_rates = [w['rate_039'] for w in attack_windows_sorted]
     
-    # Set style
-    plt.style.use('seaborn-v0_8-whitegrid')
-    fig = plt.figure(figsize=(14, 10))
-    gs = fig.add_gridspec(3, 1, hspace=0.25, height_ratios=[1, 1, 0.9])
+    # Set elegant, publication-quality style
+    plt.style.use('default')
+    plt.rcParams.update({
+        'font.family': 'sans-serif',
+        'font.sans-serif': ['Arial', 'Helvetica Neue', 'Helvetica', 'DejaVu Sans'],
+        'font.size': 10.5,
+        'axes.labelsize': 11.5,
+        'axes.titlesize': 13,
+        'xtick.labelsize': 9.5,
+        'ytick.labelsize': 9.5,
+        'legend.fontsize': 9,
+        'figure.titlesize': 14,
+        'axes.linewidth': 0.9,
+        'grid.linewidth': 0.5,
+        'lines.linewidth': 2.3,
+        'axes.labelpad': 11,
+        'xtick.major.pad': 7,
+        'ytick.major.pad': 7,
+        'xtick.major.size': 4,
+        'ytick.major.size': 4,
+        'xtick.minor.size': 2,
+        'ytick.minor.size': 2,
+    })
     
-    # Define colors
-    color_normal = '#2E86AB'  # Professional blue
-    color_attack = '#A23B72'  # Professional red/purple
-    color_threshold = '#333333'  # Dark gray
-    color_alert = '#F18F01'  # Orange
-    color_bg = '#F8F9FA'  # Light gray background
+    fig = plt.figure(figsize=(12.5, 8), facecolor='white', dpi=100)
+    gs = fig.add_gridspec(3, 1, hspace=0.42, height_ratios=[1, 1, 1])
     
-    # Plot 1: Isolation Forest Scores
-    ax1 = fig.add_subplot(gs[0])
-    ax1.set_facecolor(color_bg)
+    # Beautiful, harmonious color palette
+    color_line = '#1E3A5F'  # Rich navy blue for main line
+    color_attack_bg = '#DC3545'  # Clean red for attack periods  
+    color_threshold = '#6C757D'  # Soft gray for thresholds
+    color_alert = '#FD7E14'  # Vibrant orange for alerts
+    color_bg = '#FFFFFF'  # Pure white
+    color_grid = '#F8F9FA'  # Very subtle gray for grid
+    color_text = '#212529'  # Near black text
     
-    # Plot as one consecutive line through all time points
-    ax1.plot(times, if_scores, color='#34495E', linewidth=2.5, 
-            alpha=0.9, zorder=2, label='Anomaly Score')
-    
-    # Highlight attack periods with background shading
+    # Identify attack periods
     attack_periods = []
     in_attack = False
     attack_start = None
@@ -121,144 +137,135 @@ def create_scientific_plot(data: Dict, thresholds: Dict, output_path: Path):
     if in_attack:
         attack_periods.append((attack_start, times[-1]))
     
+    # Plot 1: Isolation Forest Scores
+    ax1 = fig.add_subplot(gs[0])
+    ax1.set_facecolor(color_bg)
+    
+    # Highlight attack periods with subtle, elegant shading - slightly more visible
     for start, end in attack_periods:
-        ax1.axvspan(start, end, alpha=0.2, color=color_attack, 
-                   label='Attack Period' if start == attack_periods[0][0] else '', zorder=1)
+        ax1.axvspan(start, end, alpha=0.13, color=color_attack_bg, zorder=0, linewidth=0)
     
-    # Threshold line
+    # Plot main line - smooth and elegant with better visual quality
+    ax1.plot(times, if_scores, color=color_line, linewidth=2.5, 
+            alpha=0.85, zorder=4, label='Anomaly Score', antialiased=True, 
+            solid_capstyle='round', solid_joinstyle='round')
+    
+    # Threshold line - refined dashed style
     ax1.axhline(y=thresholds['isolation_forest'], color=color_threshold, 
-                linestyle='--', linewidth=2.5, label=f'Threshold ({thresholds["isolation_forest"]:.4f})', 
-                zorder=10, alpha=0.8)
+                linestyle='--', linewidth=1.9, dashes=(12, 6), 
+                zorder=6, alpha=0.55, label=f'Threshold ({thresholds["isolation_forest"]:.4f})')
     
-    # Mark alerts
-    alert_times_if = [w['time'] for w in windows_sorted if w['is_alert']]
-    alert_if_scores = [w['if_score'] for w in windows_sorted if w['is_alert']]
-    if alert_times_if:
-        ax1.scatter(alert_times_if, alert_if_scores, color=color_alert, s=120, 
-                   marker='*', zorder=15, label='Alerts', edgecolors='white', linewidths=1.5)
+    ax1.set_ylabel('Isolation Forest\nAnomaly Score', fontsize=11.5, fontweight='500', 
+                   color=color_text, labelpad=13)
+    ax1.grid(True, alpha=0.3, linestyle='-', linewidth=0.4, color=color_grid, zorder=1)
+    ax1.legend(loc='upper right', fontsize=9, framealpha=0.97, shadow=False, 
+              fancybox=False, edgecolor='#DDDDDD', facecolor='white', frameon=True,
+              borderpad=0.7, handlelength=2.8, columnspacing=1.2)
+    ax1.set_ylim([0, max(if_scores) * 1.2])
     
-    ax1.set_ylabel('Isolation Forest\nAnomaly Score', fontsize=14, fontweight='bold', color='#2C3E50')
-    ax1.set_title('Real-Time CAN Intrusion Detection: Normal vs Attack Traffic', 
-                 fontsize=16, fontweight='bold', pad=25, color='#2C3E50')
-    ax1.grid(True, alpha=0.4, linestyle='-', linewidth=0.8, color='white')
-    # Combine legend items
-    from matplotlib.lines import Line2D
-    legend_elements = [
-        Line2D([0], [0], color='#34495E', linewidth=2.5, label='Anomaly Score'),
-        Line2D([0], [0], color=color_threshold, linestyle='--', linewidth=2.5, alpha=0.8, label=f'Threshold ({thresholds["isolation_forest"]:.4f})'),
-        mpatches.Patch(facecolor=color_attack, alpha=0.2, label='Attack Period'),
-        Line2D([0], [0], marker='*', color='w', markerfacecolor=color_alert, 
-               markersize=12, markeredgecolor='darkorange', markeredgewidth=1.5, label='Alerts', linestyle='None')
-    ]
-    ax1.legend(handles=legend_elements, loc='upper right', fontsize=11, framealpha=0.95, shadow=True, 
-              fancybox=True, edgecolor='gray')
-    ax1.set_ylim([0, max(if_scores) * 1.12])
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    ax1.spines['left'].set_color('#BDC3C7')
-    ax1.spines['bottom'].set_color('#BDC3C7')
+    # Refined spines
+    for spine in ['top', 'right']:
+        ax1.spines[spine].set_visible(False)
+    for spine in ['left', 'bottom']:
+        ax1.spines[spine].set_color('#CCCCCC')
+        ax1.spines[spine].set_linewidth(0.9)
     
-    # Add statistics box for IF
+    # Elegant statistics box
     if normal_if and attack_if:
         normal_mean_if = np.mean(normal_if)
         attack_mean_if = np.mean(attack_if)
-        stats_if = f'Normal: μ={normal_mean_if:.3f}\nAttack: μ={attack_mean_if:.3f}'
-        ax1.text(0.02, 0.98, stats_if, transform=ax1.transAxes, 
-                fontsize=10, verticalalignment='top', fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.5', facecolor='white', 
-                         edgecolor=color_normal, linewidth=2, alpha=0.9))
+        stats_if = f'Normal: μ = {normal_mean_if:.3f}\nAttack: μ = {attack_mean_if:.3f}'
+        ax1.text(0.02, 0.96, stats_if, transform=ax1.transAxes, 
+                fontsize=8.5, verticalalignment='top', fontweight='400',
+                bbox=dict(boxstyle='round,pad=0.45', facecolor='white', 
+                         edgecolor='#DDDDDD', linewidth=1.0, alpha=0.9))
     
     # Plot 2: PCA Reconstruction Error
     ax2 = fig.add_subplot(gs[1])
     ax2.set_facecolor(color_bg)
     
-    # Plot as one consecutive line through all time points
-    ax2.plot(times, pca_scores, color='#34495E', linewidth=2.5, 
-            alpha=0.9, zorder=2, label='Reconstruction Error')
-    
-    # Highlight attack periods with background shading
+    # Highlight attack periods
     for start, end in attack_periods:
-        ax2.axvspan(start, end, alpha=0.2, color=color_attack, zorder=1)
+        ax2.axvspan(start, end, alpha=0.13, color=color_attack_bg, zorder=0, linewidth=0)
+    
+    # Plot main line - smooth and elegant
+    ax2.plot(times, pca_scores, color=color_line, linewidth=2.5, 
+            alpha=0.85, zorder=4, label='Reconstruction Error', antialiased=True,
+            solid_capstyle='round', solid_joinstyle='round')
     
     # Threshold line
     ax2.axhline(y=thresholds['pca'], color=color_threshold, linestyle='--', 
-                linewidth=2.5, label=f'Threshold ({thresholds["pca"]:.1f})', 
-                zorder=10, alpha=0.8)
+                linewidth=1.9, dashes=(12, 6), zorder=6, alpha=0.55,
+                label=f'Threshold ({thresholds["pca"]:.1f})')
     
-    # Mark alerts
-    alert_times_pca = [w['time'] for w in windows_sorted if w['is_alert']]
-    alert_pca_scores = [w['pca_score'] for w in windows_sorted if w['is_alert']]
-    if alert_times_pca:
-        ax2.scatter(alert_times_pca, alert_pca_scores, color=color_alert, s=120, 
-                   marker='*', zorder=15, label='Alerts', edgecolors='white', linewidths=1.5)
+    ax2.set_ylabel('PCA Reconstruction\nError', fontsize=11.5, fontweight='500', 
+                   color=color_text, labelpad=13)
+    ax2.grid(True, alpha=0.3, linestyle='-', linewidth=0.4, color=color_grid, zorder=1)
+    ax2.legend(loc='upper right', fontsize=9, framealpha=0.97, shadow=False, 
+              fancybox=False, edgecolor='#DDDDDD', facecolor='white', frameon=True,
+              borderpad=0.7, handlelength=2.8, columnspacing=1.2)
+    ax2.set_ylim([0, max(pca_scores) * 1.2])
     
-    ax2.set_ylabel('PCA Reconstruction\nError', fontsize=14, fontweight='bold', color='#2C3E50')
-    ax2.grid(True, alpha=0.4, linestyle='-', linewidth=0.8, color='white')
-    legend_elements2 = [
-        Line2D([0], [0], color='#34495E', linewidth=2.5, label='Reconstruction Error'),
-        Line2D([0], [0], color=color_threshold, linestyle='--', linewidth=2.5, alpha=0.8, label=f'Threshold ({thresholds["pca"]:.1f})'),
-        mpatches.Patch(facecolor=color_attack, alpha=0.2, label='Attack Period'),
-        Line2D([0], [0], marker='*', color='w', markerfacecolor=color_alert, 
-               markersize=12, markeredgecolor='darkorange', markeredgewidth=1.5, label='Alerts', linestyle='None')
-    ]
-    ax2.legend(handles=legend_elements2, loc='upper right', fontsize=11, framealpha=0.95, shadow=True, 
-              fancybox=True, edgecolor='gray')
-    ax2.set_ylim([0, max(pca_scores) * 1.12])
-    ax2.spines['top'].set_visible(False)
-    ax2.spines['right'].set_visible(False)
-    ax2.spines['left'].set_color('#BDC3C7')
-    ax2.spines['bottom'].set_color('#BDC3C7')
+    # Refined spines
+    for spine in ['top', 'right']:
+        ax2.spines[spine].set_visible(False)
+    for spine in ['left', 'bottom']:
+        ax2.spines[spine].set_color('#CCCCCC')
+        ax2.spines[spine].set_linewidth(0.9)
     
-    # Add statistics box for PCA
+    # Elegant statistics box
     if normal_pca and attack_pca:
         normal_mean_pca = np.mean(normal_pca)
         attack_mean_pca = np.mean(attack_pca)
-        stats_pca = f'Normal: μ={normal_mean_pca:.2f}\nAttack: μ={attack_mean_pca:.2f}'
-        ax2.text(0.02, 0.98, stats_pca, transform=ax2.transAxes, 
-                fontsize=10, verticalalignment='top', fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.5', facecolor='white', 
-                         edgecolor=color_attack, linewidth=2, alpha=0.9))
+        stats_pca = f'Normal: μ = {normal_mean_pca:.2f}\nAttack: μ = {attack_mean_pca:.2f}'
+        ax2.text(0.02, 0.96, stats_pca, transform=ax2.transAxes, 
+                fontsize=8.5, verticalalignment='top', fontweight='400',
+                bbox=dict(boxstyle='round,pad=0.45', facecolor='white', 
+                         edgecolor='#DDDDDD', linewidth=1.0, alpha=0.9))
     
     # Plot 3: Frame Rate (0x039 messages per second)
     ax3 = fig.add_subplot(gs[2])
     ax3.set_facecolor(color_bg)
     
-    # Plot as one consecutive line through all time points
-    ax3.plot(times, rates_039, color='#34495E', linewidth=2.5, 
-            alpha=0.9, zorder=2, label='Frame Rate')
-    
-    # Highlight attack periods with background shading
+    # Highlight attack periods
     for start, end in attack_periods:
-        ax3.axvspan(start, end, alpha=0.2, color=color_attack, zorder=1)
+        ax3.axvspan(start, end, alpha=0.13, color=color_attack_bg, zorder=0, linewidth=0)
     
-    # Highlight attack threshold (100 fps)
-    ax3.axhline(y=100, color=color_alert, linestyle=':', linewidth=2.5, 
-                label='Attack Threshold (100 fps)', alpha=0.8, zorder=5)
+    # Plot main line - smooth and elegant
+    ax3.plot(times, rates_039, color=color_line, linewidth=2.5, 
+            alpha=0.85, zorder=4, label='Frame Rate', antialiased=True,
+            solid_capstyle='round', solid_joinstyle='round')
     
-    ax3.set_xlabel('Time (seconds)', fontsize=14, fontweight='bold', color='#2C3E50')
-    ax3.set_ylabel('0x039 Frame Rate\n(frames/second)', fontsize=14, fontweight='bold', color='#2C3E50')
-    ax3.grid(True, alpha=0.4, linestyle='-', linewidth=0.8, color='white')
-    legend_elements3 = [
-        Line2D([0], [0], color='#34495E', linewidth=2.5, label='Frame Rate'),
-        Line2D([0], [0], color=color_alert, linestyle=':', linewidth=2.5, alpha=0.8, label='Attack Threshold (100 fps)'),
-        mpatches.Patch(facecolor=color_attack, alpha=0.2, label='Attack Period')
-    ]
-    ax3.legend(handles=legend_elements3, loc='upper right', fontsize=11, framealpha=0.95, shadow=True, 
-              fancybox=True, edgecolor='gray')
-    ax3.spines['top'].set_visible(False)
-    ax3.spines['right'].set_visible(False)
-    ax3.spines['left'].set_color('#BDC3C7')
-    ax3.spines['bottom'].set_color('#BDC3C7')
+    # Highlight attack threshold
+    ax3.axhline(y=100, color=color_alert, linestyle=':', linewidth=1.9, 
+                dashes=(8, 5), label='Attack Threshold (100 fps)', 
+                alpha=0.55, zorder=6)
     
-    # Add statistics box for rates
+    ax3.set_xlabel('Time (seconds)', fontsize=11.5, fontweight='500', 
+                   color=color_text, labelpad=11)
+    ax3.set_ylabel('0x039 Frame Rate\n(frames/second)', fontsize=11.5, fontweight='500', 
+                   color=color_text, labelpad=13)
+    ax3.grid(True, alpha=0.3, linestyle='-', linewidth=0.4, color=color_grid, zorder=1)
+    ax3.legend(loc='upper right', fontsize=9, framealpha=0.97, shadow=False, 
+              fancybox=False, edgecolor='#DDDDDD', facecolor='white', frameon=True,
+              borderpad=0.7, handlelength=2.8, columnspacing=1.2)
+    
+    # Refined spines
+    for spine in ['top', 'right']:
+        ax3.spines[spine].set_visible(False)
+    for spine in ['left', 'bottom']:
+        ax3.spines[spine].set_color('#CCCCCC')
+        ax3.spines[spine].set_linewidth(0.9)
+    
+    # Elegant statistics box
     if normal_rates and attack_rates:
         normal_mean_rate = np.mean(normal_rates)
         attack_mean_rate = np.mean(attack_rates)
-        stats_rate = f'Normal: μ={normal_mean_rate:.1f} fps\nAttack: μ={attack_mean_rate:.1f} fps'
-        ax3.text(0.02, 0.98, stats_rate, transform=ax3.transAxes, 
-                fontsize=10, verticalalignment='top', fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.5', facecolor='white', 
-                         edgecolor=color_alert, linewidth=2, alpha=0.9))
+        stats_rate = f'Normal: μ = {normal_mean_rate:.1f} fps\nAttack: μ = {attack_mean_rate:.1f} fps'
+        ax3.text(0.02, 0.96, stats_rate, transform=ax3.transAxes, 
+                fontsize=8.5, verticalalignment='top', fontweight='400',
+                bbox=dict(boxstyle='round,pad=0.45', facecolor='white', 
+                         edgecolor='#DDDDDD', linewidth=1.0, alpha=0.9))
     
     # Add overall statistics
     total_windows = len(windows)
@@ -271,28 +278,33 @@ def create_scientific_plot(data: Dict, thresholds: Dict, output_path: Path):
     alerts_during_normal = sum(1 for w in windows if w['is_alert'] and not w['is_attack_period'])
     actual_fpr = (alerts_during_normal / normal_windows_count * 100) if normal_windows_count > 0 else 0
     
-    stats_text = f'Detection Performance\n'
-    stats_text += f'{"─"*25}\n'
+    # Add refined main title
+    fig.suptitle('Real-Time CAN Intrusion Detection System', 
+                fontsize=14, fontweight='500', color=color_text, y=0.992)
+    
+    # Add refined performance summary
+    stats_text = f'Performance Summary\n'
+    stats_text += f'{"─"*19}\n'
     stats_text += f'Total Windows: {total_windows}\n'
     stats_text += f'  Normal: {normal_windows_count} ({normal_windows_count/total_windows*100:.1f}%)\n'
     stats_text += f'  Attack: {attack_windows_count} ({attack_windows_count/total_windows*100:.1f}%)\n'
-    stats_text += f'\nTotal Alerts: {total_alerts}\n'
+    stats_text += f'\nAlerts: {total_alerts}\n'
     stats_text += f'Detection Rate: {detection_rate:.1f}%\n'
     stats_text += f'False Positive Rate: {actual_fpr:.2f}%\n'
     
     if times:
         duration = times[-1] - times[0]
-        stats_text += f'\nDuration: {duration:.1f}s\n'
-        stats_text += f'Alert Rate: {total_alerts/(duration/3600):.1f} alerts/hour'
+        stats_text += f'\nDuration: {duration:.1f}s'
     
-    fig.text(0.98, 0.02, stats_text, fontsize=11, fontweight='bold',
+    fig.text(0.985, 0.02, stats_text, fontsize=9, fontweight='400',
              verticalalignment='bottom', horizontalalignment='right',
-             bbox=dict(boxstyle='round,pad=0.8', facecolor='white', 
-                      edgecolor='#34495E', linewidth=2, alpha=0.95))
+             bbox=dict(boxstyle='round,pad=0.55', facecolor='#FAFAFA', 
+                      edgecolor='#DDDDDD', linewidth=1.0, alpha=0.93),
+             color=color_text)
     
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.025, 1, 0.985])
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white', 
-                edgecolor='none', pad_inches=0.2)
+                edgecolor='none', pad_inches=0.1, format='png')
     print(f"✓ Saved scientific visualization to {output_path}")
     print(f"\nStatistics:")
     print(f"  Normal windows: {normal_windows_count}")
