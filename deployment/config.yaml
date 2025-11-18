@@ -27,7 +27,9 @@ rate_detection:
   # Alert if rate is below this fraction of mean (for low-volume attacks)
   rate_minimum_threshold: 0.1
   # Alert if timing regularity is too high (CV < threshold means very regular)
-  regularity_threshold: 0.1
+  # NOTE: Normal CAN traffic IS regular, so we only alert on EXTREME regularity
+  # or when regularity changes significantly from baseline
+  regularity_threshold: 0.005
   # Alert if timing is too irregular (CV > threshold)
   irregularity_threshold: 2.0
   # Monitor specific IDs (empty = monitor all). Use hex strings like "0x039" or integers

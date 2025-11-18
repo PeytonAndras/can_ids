@@ -182,13 +182,41 @@ class RateDetector:
                     max_score = max(max_score, 0.7)
             
             # Check timing regularity (detect injection patterns)
+            # Only alert if CV is significantly lower than baseline AND we have enough history
             cv = stats.compute_timing_regularity(self.config.history_window_seconds, current_time)
-            if cv < self.config.regularity_threshold and len(stats.timestamps) >= 5:
-                alerts.append(
-                    f"ID 0x{can_id:03X}: suspiciously regular timing "
-                    f"(CV={cv:.3f} < {self.config.regularity_threshold} threshold)"
-                )
-                max_score = max(max_score, 0.9)
+            
+            # Build baseline CV if we have enough historical data
+            if len(stats.timestamps) >= 20:  # Need more samples for baseline
+                # Use recent windows to compute baseline CV
+                recent_cvs = []
+                for i in range(min(10, len(stats.timestamps) - 5)):
+                    window_start = current_time - (i + 1) * self.config.history_window_seconds / 10
+                    window_cv = stats.compute_timing_regularity(
+                        self.config.history_window_seconds / 10, window_start
+                    )
+                    if window_cv < 1.0:  # Valid CV
+                        recent_cvs.append(window_cv)
+                
+                if len(recent_cvs) >= 5:
+                    baseline_cv = float(np.mean(recent_cvs))
+                    cv_std = float(np.std(recent_cvs)) if len(recent_cvs) > 1 else baseline_cv * 0.1
+                    
+                    # Only alert if current CV is significantly lower than baseline
+                    # AND below absolute threshold (to catch truly suspicious patterns)
+                    if cv < self.config.regularity_threshold and cv < baseline_cv - 2 * cv_std:
+                        alerts.append(
+                            f"ID 0x{can_id:03X}: suspiciously regular timing "
+                            f"(CV={cv:.3f} < baseline={baseline_cv:.3f}±{cv_std:.3f}, threshold={self.config.regularity_threshold})"
+                        )
+                        max_score = max(max_score, 0.9)
+            elif cv < self.config.regularity_threshold and len(stats.timestamps) >= 10:
+                # Fallback: alert if CV is extremely low (near zero) even without baseline
+                if cv < 0.005:  # Very strict - only near-perfect regularity
+                    alerts.append(
+                        f"ID 0x{can_id:03X}: extremely regular timing "
+                        f"(CV={cv:.3f} < {self.config.regularity_threshold} threshold)"
+                    )
+                    max_score = max(max_score, 0.7)
             
             if cv > self.config.irregularity_threshold and len(stats.timestamps) >= 5:
                 alerts.append(
