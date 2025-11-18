@@ -1,0 +1,8 @@
+[   0.1s] Window    1   OK | IF=0.6020 (thresh=0.6764) ✗ | PCA=4.3874 (thresh=20.0000) ✗ | Frames=  36 IDs= 8 0x039_rate=  36/s
+[   0.2s] Window    2   OK | IF=0.4742 (thresh=0.6764) ✗ | PCA=7.7226 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[   5.0s] Window   50 🚨 ALERT | IF=0.5248 (thresh=0.6764) ✗ | PCA=91.4718 (thresh=20.0000) ✓ | Frames=  98 IDs=17 0x039_rate=  98/s
+[   5.1s] Window   51 🚨 ALERT | IF=0.5685 (thresh=0.6764) ✗ | PCA=115.4289 (thresh=20.0000) ✓ | Frames= 126 IDs=18 0x039_rate= 126/s
+[  13.6s] Window  136   OK | IF=0.4844 (thresh=0.6764) ✗ | PCA=8.1772 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+[  19.5s] Window  195 🚨 ALERT | IF=0.5458 (thresh=0.6764) ✗ | PCA=97.2357 (thresh=20.0000) ✓ | Frames= 104 IDs=17 0x039_rate= 104/s
+[  22.0s] Window  220   OK | IF=0.4969 (thresh=0.6764) ✗ | PCA=8.5089 (thresh=20.0000) ✗ | Frames=  80 IDs=17 0x039_rate=  80/s
+
