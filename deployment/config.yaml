@@ -6,7 +6,7 @@ models:
   isolation_forest: ../models/unsupervised/real_can0/isolation_forest.joblib
   pca: ../models/unsupervised/real_can0/pca_reconstruction.joblib
 thresholds: ../results/unsupervised/real_can0/thresholds.json
-ensemble: isolation_forest
+ensemble: logical_or  # Use either detector - PCA threshold adjusted for live traffic
 logging:
   path: logs/alerts.jsonl
   level: INFO
